@@ -2,45 +2,32 @@ class Vehicle{
     private int vehicleID;
     private String brand;
     private String model;
-    private double rentPrice;
+    private double rentPrice; //default price
 
+    //default constructor
     public Vehicle() {
     }
-
+    //constructor with peramiter
     public Vehicle(int vehicleID, String brand, String model, int rentPrice){
         this.vehicleID=vehicleID;
         this.brand=brand;
         this.model=model;
         this.rentPrice=rentPrice;
     }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
+    //displaying all details
     public void displayDetails(){
         System.out.println("Vehicle ID: "+vehicleID);
-        System.out.println("Brand Name: "+getBrand());
-        System.out.println("Model: "+getModel());
+        System.out.println("Brand Name: "+brand);
+        System.out.println("Model: "+model);
         System.out.println("Rent price: "+rentPrice);
     }
+    //calculating price with days
     public double calculateRent(int days){
         double price= rentPrice*days;
         System.out.println("Rent price with days: "+price);
         return price;
     }
+    //check availability
     public void isAvailable(boolean status) {
         if(status==true){
             System.out.println("Vehicle is Available");
@@ -57,36 +44,22 @@ class Car extends Vehicle{
     private String hasAC;
     private String transmissionType;
 
-    public Car(int vehicleID, String brand, String model,int numSeats, int rentPrice) {
+    public Car(int vehicleID, String brand, String model, int rentPrice, int numSeats, String hasAC, String transmissionType) {
         super(vehicleID, brand, model, rentPrice);
-        this.numSeats=numSeats;
-    }
-
-    public Car() {
-    }
-
-    public void setHasAC(String hasAC) {
-        this.hasAC=hasAC;
-    }
-
-    public String getHasAC() {
-        return hasAC;
-    }
-
-    public void setTransmissionType(String transmissionType) {
+        this.numSeats = numSeats;
+        this.hasAC = hasAC;
         this.transmissionType = transmissionType;
     }
 
-    public String getTransmissionType() {
-        return transmissionType;
+    public Car() {
     }
 
     @Override
     public void displayDetails() {
         super.displayDetails();
         System.out.println("Number of Seats: "+numSeats);
-        System.out.println("AC: "+getHasAC());
-        System.out.println("Transmission Type: "+getTransmissionType());
+        System.out.println("AC: "+hasAC);
+        System.out.println("Transmission Type: "+transmissionType);
     }
 }
 
@@ -97,31 +70,17 @@ class bike extends Vehicle{
     public bike(){
     }
 
-    public bike(int vehicleID, String brand, String model, int rentPrice) {
+    public bike(int vehicleID, String brand, String model, int rentPrice, String bikeType, int engineCapacity) {
         super(vehicleID, brand, model, rentPrice);
-    }
-
-    public void setBikeType(String bikeType) {
         this.bikeType = bikeType;
-    }
-
-    public String getBikeType() {
-        return bikeType;
-    }
-
-    public void setEngineCapacity(int engineCapacity) {
         this.engineCapacity = engineCapacity;
-    }
-
-    public int getEngineCapacity() {
-        return engineCapacity;
     }
 
     @Override
     public void displayDetails() {
         super.displayDetails();
-        System.out.println("Bike Type: "+getBikeType());
-        System.out.println("Engine capacity: "+getEngineCapacity());
+        System.out.println("Bike Type: "+bikeType);
+        System.out.println("Engine capacity: "+engineCapacity);
     }
 }
 class Van extends Vehicle{
@@ -131,24 +90,17 @@ class Van extends Vehicle{
     public Van() {
     }
 
-    public Van(int vehicleID, String brand, String model, int rentPrice, int cargoCapacity) {
+    public Van(int vehicleID, String brand, String model, int rentPrice, int cargoCapacity, String hasSlidingDoors) {
         super(vehicleID, brand, model, rentPrice);
         this.cargoCapacity = cargoCapacity;
-    }
-
-    public void setHasSlidingDoors(String hasSlidingDoors) {
         this.hasSlidingDoors = hasSlidingDoors;
-    }
-
-    public String getHasSlidingDoors() {
-        return hasSlidingDoors;
     }
 
     @Override
     public void displayDetails() {
         super.displayDetails();
         System.out.println("Cargo Capacity: "+cargoCapacity);
-        System.out.println("Door type: "+getHasSlidingDoors());
+        System.out.println("Door type: "+hasSlidingDoors);
     }
 }
 
