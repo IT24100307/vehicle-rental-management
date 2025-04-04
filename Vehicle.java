@@ -1,13 +1,18 @@
 class Vehicle{
-    private int vehicleID;
+    protected int vehicleID;
     private String brand;
     private String model;
     private double rentPrice; //default price
 
+    public Vehicle(int rentedVehicle) {
+        this.vehicleID=rentedVehicle;
+    }
+
     //default constructor
     public Vehicle() {
     }
-    //constructor with peramiter
+
+    //constructor with parameter
     public Vehicle(int vehicleID, String brand, String model, int rentPrice){
         this.vehicleID=vehicleID;
         this.brand=brand;
@@ -21,6 +26,7 @@ class Vehicle{
         System.out.println("Model: "+model);
         System.out.println("Rent price: "+rentPrice);
     }
+
     //calculating price with days
     public double calculateRent(int days){
         double price= rentPrice*days;
@@ -28,14 +34,13 @@ class Vehicle{
         return price;
     }
     //check availability
-    public void isAvailable(boolean status) {
-        if(status==true){
+    public void isAvailable(int ID) {
+        boolean status= vehicleID == ID;
+        if(status){
             System.out.println("Vehicle is Available");
-            return;
         }
-        if(status==false){
+        else{
             System.out.println("Vehicle is not available");
-            return;
         }
     }
 }
@@ -123,6 +128,7 @@ class Lorry extends Vehicle{
         System.out.println("Max load capacity: "+maxLoadCapacity);
         System.out.println("Number of axles: "+numAxles);
     }
+
 }
 class Bus extends Vehicle{
     int passengerCapacity;
@@ -143,6 +149,7 @@ class Bus extends Vehicle{
         System.out.println("Passenger Capacity: "+passengerCapacity);
         System.out.println("Wheel chair Access: "+hasWheelchairAccess);
     }
+
 }
 
 
