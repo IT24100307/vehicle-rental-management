@@ -1,0 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive Hub - Vehicle Rental System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #2ec4b6;
+            --danger: #e63946;
+            --success: #06d6a0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 15px 20px;
+            box-shadow: var(--box-shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            font-size: 28px;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: white;
+            background: var(--primary);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #c5313e;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background: #25a99d;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--dark);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .filter-select {
+            padding: 8px 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            padding: 5px 15px;
+            width: 300px;
+        }
+
+        .search-box input {
+            border: none;
+            padding: 8px 5px;
+            width: 100%;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box i {
+            color: var(--gray);
+        }
+
+        #vehicleForm, #updateForm, #purchaseForm, #rentalStatusForm {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 700px;
+            margin: 20px auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-title {
+            font-size: 22px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        form {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1 0 calc(50% - 10px);
+        }
+
+        .form-group-full {
+            flex: 1 0 100%;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        select, input {
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            width: 100%;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+        }
+
+        .form-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .vehicle-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .vehicle-type-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+
+        .image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .vehicle-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .vehicle-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .vehicle-details {
+            padding: 20px;
+        }
+
+        .vehicle-id {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .vehicle-name {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .vehicle-model {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .vehicle-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .specs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .spec-item i {
+            color: var(--primary);
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .action-btn i {
+            margin-right: 5px;
+        }
+
+        .action-btn:hover {
+            color: var(--primary-dark);
+        }
+
+        .action-btn.delete {
+            color: var(--danger);
+        }
+
+        .action-btn.delete:hover {
+            color: #c5313e;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .navbar {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .main-content {
+                margin-top: 150px;
+            }
+            
+            .form-group {
+                flex: 1 0 100%;
+            }
+            
+            #vehicleForm, #updateForm, #purchaseForm, #rentalStatusForm {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            color: var(--dark);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1002;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast i {
+            font-size: 20px;
+        }
+
+        .toast.success i {
+            color: var(--success);
+        }
+
+        .toast.error i {
+            color: var(--danger);
+        }
+
+        .selected-vehicle-preview {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px dashed var(--primary);
+        }
+
+        .selected-vehicle-preview h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .selected-vehicle-preview p {
+            margin: 0;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .modal-form {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 700px;
+            margin: 20px auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-content">
+        <div class="logo">
+            <i class="fas fa-car"></i>
+            <span>Drive Hub</span>
+        </div>
+        <div class="navbar">
+            <button class="btn" onclick="showAddForm()"><i class="fas fa-plus"></i> Add Vehicle</button>
+            <button class="btn btn-secondary" onclick="showUpdateForm()"><i class="fas fa-edit"></i> Update Vehicle</button>
+            <button class="btn btn-success" onclick="showPurchasedVehicles()"><i class="fas fa-shopping-cart"></i> Rented Vehicles</button>
+            <button class="btn btn-outline" onclick="viewVehicles()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="container">
+        <h1 class="page-title" id="pageTitle">Vehicle Inventory Management</h1>
+        
+        <div class="filter-container">
+            <div class="filter-group">
+                <span class="filter-label">Sort by:</span>
+                <select id="sortBy" class="filter-select" onchange="applyFilter()">
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                </select>
+            </div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search vehicles..." onkeyup="applyFilter()">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        
+        <div id="vehicleList" class="vehicle-grid"></div>
+        <div id="purchasedVehiclesList" class="purchased-vehicles-grid" style="display: none;"></div>
+    </div>
+</div>
+
+<div class="overlay" id="formOverlay"></div>
+
+<div id="vehicleForm">
+    <div class="form-header">
+        <h2 class="form-title">Add New Vehicle</h2>
+        <button class="close-btn" onclick="hideForm()">&times;</button>
+    </div>
+    <form id="addVehicleForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="vehicleType">Vehicle Type</label>
+            <select id="vehicleType" onchange="updateFormFields()">
+                <option value="1">Car</option>
+                <option value="2">Bike</option>
+                <option value="3">Van</option>
+                <option value="4">Lorry</option>
+                <option value="5">Bus</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="vehicleID">Vehicle ID</label>
+            <input type="text" id="vehicleID" required>
+        </div>
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" id="brand" required>
+        </div>
+        <div class="form-group">
+            <label for="model">Model</label>
+            <input type="text" id="model" required>
+        </div>
+        <div class="form-group">
+            <label for="rentPrice">Rent Price (Rs per day)</label>
+            <input type="number" id="rentPrice" step="0.01" required>
+        </div>
+        <div class="form-group-full">
+            <label for="imageFile">Vehicle Image</label>
+            <input type="file" id="imageFile" accept="image/*">
+        </div>
+        <div id="extraFields" class="form-group-full"></div>
+        <div class="form-buttons">
+            <button type="button" class="btn btn-danger" onclick="hideForm()">Cancel</button>
+            <button type="submit" class="btn">Add Vehicle</button>
+        </div>
+    </form>
+</div>
+
+<div id="updateForm">
+    <div class="form-header">
+        <h2 class="form-title">Update Vehicle</h2>
+        <button class="close-btn" onclick="hideForm()">&times;</button>
+    </div>
+    <form id="updateVehicleForm">
+        <div class="form-group">
+            <label for="updateVehicleID">Vehicle ID</label>
+            <input type="text" id="updateVehicleID" required>
+        </div>
+        <div class="form-group">
+            <label for="updateVehicleType">Vehicle Type</label>
+            <select id="updateVehicleType" onchange="updateUpdateFormFields()">
+                <option value="1">Car</option>
+                <option value="2">Bike</option>
+                <option value="3">Van</option>
+                <option value="4">Lorry</option>
+                <option value="5">Bus</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="updateBrand">Brand</label>
+            <input type="text" id="updateBrand" required>
+        </div>
+        <div class="form-group">
+            <label for="updateModel">Model</label>
+            <input type="text" id="updateModel" required>
+        </div>
+        <div class="form-group">
+            <label for="updateRentPrice">Rent Price (Rs per day)</label>
+            <input type="number" id="updateRentPrice" step="0.01" required>
+        </div>
+        <div id="updateExtraFields" class="form-group-full"></div>
+        <div class="form-buttons">
+            <button type="button" class="btn btn-danger" onclick="hideForm()">Cancel</button>
+            <button type="submit" class="btn">Update Vehicle</button>
+        </div>
+    </form>
+</div>
+
+<div id="purchaseForm" class="modal-form">
+    <div class="form-header">
+        <h2 class="form-title">Purchase Vehicle</h2>
+        <button class="close-btn" onclick="hideForm()">&times;</button>
+    </div>
+    <form id="addPurchaseForm">
+        <div class="form-group-full">
+            <div class="selected-vehicle-preview">
+                <h3 id="purchaseVehicleTitle">Selected Vehicle: </h3>
+                <p id="purchaseVehicleDetails"></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="customerName">Customer Name</label>
+            <input type="text" id="customerName" required>
+        </div>
+        <div class="form-group">
+            <label for="contactNumber">Contact Number</label>
+            <input type="tel" id="contactNumber" required>
+        </div>
+        <input type="hidden" id="purchaseVehicleId">
+        <div class="form-buttons">
+            <button type="button" class="btn btn-danger" onclick="hideForm()">Cancel</button>
+            <button type="submit" class="btn">Complete Purchase</button>
+        </div>
+    </form>
+</div>
+
+<div id="rentalStatusForm" class="modal-form">
+    <div class="form-header">
+        <h2 class="form-title">Update Rental Status</h2>
+        <button class="close-btn" onclick="hideForm()">&times;</button>
+    </div>
+    <form id="updateRentalStatusForm">
+        <div class="form-group-full">
+            <div class="selected-vehicle-preview">
+                <h3 id="rentalStatusVehicleTitle">Selected Vehicle: </h3>
+                <p id="rentalStatusVehicleDetails"></p>
+            </div>
+        </div>
+        <div class="form-group-full">
+            <label for="rentalStatus">Rental Status</label>
+            <select id="rentalStatus" required>
+                <option value="true">Rented Out</option>
+                <option value="false">Available</option>
+            </select>
+        </div>
+        <input type="hidden" id="rentalStatusPurchaseId">
+        <div class="form-buttons">
+            <button type="button" class="btn btn-danger" onclick="hideForm()">Cancel</button>
+            <button type="submit" class="btn">Update Status</button>
+        </div>
+    </form>
+</div>
+
+<div id="toast" class="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+    // Global variables
+    let allVehicles = [];
+    const BASE_URL = 'http://localhost:8083'; // API base URL
+    
+    // Intercept fetch to replace port 8082 with 8083
+    const originalFetch = window.fetch;
+    window.fetch = function() {
+        let url = arguments[0];
+        if (typeof url === 'string' && url.includes('localhost:8082')) {
+            url = url.replace('localhost:8082', 'localhost:8083');
+            arguments[0] = url;
+        }
+        return originalFetch.apply(this, arguments);
+    };
+
+    // Show forms with overlay
+    function showAddForm() {
+        document.getElementById('vehicleForm').style.display = 'block';
+        document.getElementById('formOverlay').style.display = 'block';
+        updateFormFields();
+    }
+    
+    function showUpdateForm() {
+        document.getElementById('updateForm').style.display = 'block';
+        document.getElementById('formOverlay').style.display = 'block';
+        updateUpdateFormFields();
+    }
+    
+    function showPurchaseForm() {
+        document.getElementById('purchaseForm').style.display = 'block';
+        document.getElementById('formOverlay').style.display = 'block';
+    }
+    
+    function showRentalStatusForm() {
+        document.getElementById('rentalStatusForm').style.display = 'block';
+        document.getElementById('formOverlay').style.display = 'block';
+    }
+    
+    // Hide forms and overlay
+    function hideForm() {
+        document.getElementById('vehicleForm').style.display = 'none';
+        document.getElementById('updateForm').style.display = 'none';
+        document.getElementById('purchaseForm').style.display = 'none';
+        document.getElementById('rentalStatusForm').style.display = 'none';
+        document.getElementById('formOverlay').style.display = 'none';
+    }
+    
+    // Show toast notification
+    function showToast(message, isSuccess = true) {
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toast.className = isSuccess ? 'toast success show' : 'toast error show';
+        toast.querySelector('i').className = isSuccess ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+        toastMessage.textContent = message;
+        
+        setTimeout(() => {
+            toast.className = toast.className.replace('show', '');
+        }, 3000);
+    }
+    
+    // Update form fields based on vehicle type
+    function updateFormFields() {
+        const type = document.getElementById('vehicleType').value;
+        const extraFields = document.getElementById('extraFields');
+        extraFields.innerHTML = '';
+        
+        if (type === '1') { // Car
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="numSeats">Number of Seats</label>
+                    <input type="number" id="numSeats" required>
+                </div>
+                <div class="form-group">
+                    <label for="hasAC">Has AC</label>
+                    <select id="hasAC" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transmissionType">Transmission Type</label>
+                    <select id="transmissionType" required>
+                        <option value="Automatic">Automatic</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Semi-Automatic">Semi-Automatic</option>
+                    </select>
+                </div>
+            `;
+        } else if (type === '2') { // Bike
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="bikeType">Bike Type</label>
+                    <select id="bikeType" required>
+                        <option value="Sport">Sport</option>
+                        <option value="Cruiser">Cruiser</option>
+                        <option value="Touring">Touring</option>
+                        <option value="Off-Road">Off-Road</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="engineCapacity">Engine Capacity (cc)</label>
+                    <input type="number" id="engineCapacity" required>
+                </div>
+            `;
+        } else if (type === '3') { // Van
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="numberOfSeat">Number of Seats</label>
+                    <input type="number" id="numberOfSeat" required>
+                </div>
+                <div class="form-group">
+                    <label for="hasSlidingDoors">Has Sliding Doors</label>
+                    <select id="hasSlidingDoors" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            `;
+        } else if (type === '4') { // Lorry
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="maxLoadCapacity">Max Load Capacity (kg)</label>
+                    <input type="number" id="maxLoadCapacity" required>
+                </div>
+                <div class="form-group">
+                    <label for="numAxles">Number of Axles</label>
+                    <input type="number" id="numAxles" required>
+                </div>
+            `;
+        } else if (type === '5') { // Bus
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="passengerCapacity">Passenger Capacity</label>
+                    <input type="number" id="passengerCapacity" required>
+                </div>
+                <div class="form-group">
+                    <label for="hasWheelchairAccess">Has Wheelchair Access</label>
+                    <select id="hasWheelchairAccess" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            `;
+        }
+    }
+    
+    function updateUpdateFormFields() {
+        const type = document.getElementById('updateVehicleType').value;
+        const extraFields = document.getElementById('updateExtraFields');
+        extraFields.innerHTML = '';
+        
+        if (type === '1') { // Car
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="updateNumSeats">Number of Seats</label>
+                    <input type="number" id="updateNumSeats" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateHasAC">Has AC</label>
+                    <select id="updateHasAC" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateTransmissionType">Transmission Type</label>
+                    <select id="updateTransmissionType" required>
+                        <option value="Automatic">Automatic</option>
+                        <option value="Manual">Manual</option>
+                        <option value="Semi-Automatic">Semi-Automatic</option>
+                    </select>
+                </div>
+            `;
+        } else if (type === '2') { // Bike
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="updateBikeType">Bike Type</label>
+                    <select id="updateBikeType" required>
+                        <option value="Sport">Sport</option>
+                        <option value="Cruiser">Cruiser</option>
+                        <option value="Touring">Touring</option>
+                        <option value="Off-Road">Off-Road</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="updateEngineCapacity">Engine Capacity (cc)</label>
+                    <input type="number" id="updateEngineCapacity" required>
+                </div>
+            `;
+        } else if (type === '3') { // Van
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="updateNumberOfSeat">Number of Seats</label>
+                    <input type="number" id="updateNumberOfSeat" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateHasSlidingDoors">Has Sliding Doors</label>
+                    <select id="updateHasSlidingDoors" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            `;
+        } else if (type === '4') { // Lorry
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="updateMaxLoadCapacity">Max Load Capacity (kg)</label>
+                    <input type="number" id="updateMaxLoadCapacity" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateNumAxles">Number of Axles</label>
+                    <input type="number" id="updateNumAxles" required>
+                </div>
+            `;
+        } else if (type === '5') { // Bus
+            extraFields.innerHTML = `
+                <div class="form-group">
+                    <label for="updatePassengerCapacity">Passenger Capacity</label>
+                    <input type="number" id="updatePassengerCapacity" required>
+                </div>
+                <div class="form-group">
+                    <label for="updateHasWheelchairAccess">Has Wheelchair Access</label>
+                    <select id="updateHasWheelchairAccess" required>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            `;
+        }
+    }
+    
+    // Getting vehicle type name for display
+    function getVehicleTypeName(vehicle) {
+        if (vehicle.numSeats !== undefined && vehicle.hasAC !== undefined) return 'Car';
+        if (vehicle.bikeType !== undefined) return 'Bike';
+        if (vehicle.hasSlidingDoors !== undefined) return 'Van';
+        if (vehicle.maxLoadCapacity !== undefined) return 'Lorry';
+        if (vehicle.passengerCapacity !== undefined) return 'Bus';
+        return 'Unknown';
+    }
+    
+    // Getting appropriate icon based on vehicle type
+    function getVehicleIcon(vehicle) {
+        if (vehicle.numSeats !== undefined && vehicle.hasAC !== undefined) return 'fa-car';
+        if (vehicle.bikeType !== undefined) return 'fa-motorcycle';
+        if (vehicle.hasSlidingDoors !== undefined) return 'fa-shuttle-van';
+        if (vehicle.maxLoadCapacity !== undefined) return 'fa-truck';
+        if (vehicle.passengerCapacity !== undefined) return 'fa-bus';
+        return 'fa-car-side';
+    }
+    
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        viewVehicles();
+    });
+    
+    // Handle form submission for adding vehicle
+    document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const type = document.getElementById('vehicleType').value;
+        const vehicle = {
+            vehicleID: document.getElementById('vehicleID').value,
+            brand: document.getElementById('brand').value,
+            model: document.getElementById('model').value,
+            rentPrice: parseFloat(document.getElementById('rentPrice').value),
+            imagePath: null
+        };
+        
+        if (type === '1') { // Car
+            vehicle.numSeats = parseInt(document.getElementById('numSeats').value);
+            vehicle.hasAC = document.getElementById('hasAC').value;
+            vehicle.transmissionType = document.getElementById('transmissionType').value;
+        } else if (type === '2') { // Bike
+            vehicle.bikeType = document.getElementById('bikeType').value;
+            vehicle.engineCapacity = parseInt(document.getElementById('engineCapacity').value);
+        } else if (type === '3') { // Van
+            vehicle.numberOfSeat = parseInt(document.getElementById('numberOfSeat').value);
+            vehicle.hasSlidingDoors = document.getElementById('hasSlidingDoors').value;
+        } else if (type === '4') { // Lorry
+            vehicle.maxLoadCapacity = parseInt(document.getElementById('maxLoadCapacity').value);
+            vehicle.numAxles = parseInt(document.getElementById('numAxles').value);
+        } else if (type === '5') { // Bus
+            vehicle.passengerCapacity = parseInt(document.getElementById('passengerCapacity').value);
+            vehicle.hasWheelchairAccess = document.getElementById('hasWheelchairAccess').value;
+        }
+        
+        fetch('http://localhost:8082/api/vehicles/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(vehicle)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.text();
+        })
+        .then(data => {
+            const imageFile = document.getElementById('imageFile').files[0];
+            if (imageFile) {
+                const formData = new FormData();
+                formData.append('file', imageFile);
+                return fetch(`http://localhost:8082/api/vehicles/uploadImage/${vehicle.vehicleID}`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } else {
+                showToast('Vehicle added successfully!');
+                viewVehicles();
+                return Promise.resolve();
+            }
+        })
+        .then(response => {
+            if (response) {
+                if (!response.ok) throw new Error('Image upload failed');
+                return response.text();
+            }
+            return null;
+        })
+        .then(data => {
+            if (data) {
+                showToast('Vehicle and image added successfully!');
+                viewVehicles();
+            }
+            hideForm();
+            document.getElementById('addVehicleForm').reset();
+        })
+        .catch(error => {
+            showToast('Error: ' + error.message, false);
+        });
+    });
+    
+    // Handle form submission for updating vehicle
+    document.getElementById('updateVehicleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const vehicleID = document.getElementById('updateVehicleID').value;
+        const type = document.getElementById('updateVehicleType').value;
+        const vehicle = {
+            vehicleID: vehicleID,
+            brand: document.getElementById('updateBrand').value,
+            model: document.getElementById('updateModel').value,
+            rentPrice: parseFloat(document.getElementById('updateRentPrice').value)
+        };
+        
+        if (type === '1') { // Car
+            vehicle.numSeats = parseInt(document.getElementById('updateNumSeats').value);
+            vehicle.hasAC = document.getElementById('updateHasAC').value;
+            vehicle.transmissionType = document.getElementById('updateTransmissionType').value;
+        } else if (type === '2') { // Bike
+            vehicle.bikeType = document.getElementById('updateBikeType').value;
+            vehicle.engineCapacity = parseInt(document.getElementById('updateEngineCapacity').value);
+        } else if (type === '3') { // Van
+            vehicle.numberOfSeat = parseInt(document.getElementById('updateNumberOfSeat').value);
+            vehicle.hasSlidingDoors = document.getElementById('updateHasSlidingDoors').value;
+        } else if (type === '4') { // Lorry
+            vehicle.maxLoadCapacity = parseInt(document.getElementById('updateMaxLoadCapacity').value);
+            vehicle.numAxles = parseInt(document.getElementById('updateNumAxles').value);
+        } else if (type === '5') { // Bus
+            vehicle.passengerCapacity = parseInt(document.getElementById('updatePassengerCapacity').value);
+            vehicle.hasWheelchairAccess = document.getElementById('updateHasWheelchairAccess').value;
+        }
+        
+        fetch('http://localhost:8082/api/vehicles/update', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(vehicle)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            return response.text();
+        })
+        .then(data => {
+            showToast('Vehicle updated successfully!');
+            viewVehicles();
+            hideForm();
+            document.getElementById('updateVehicleForm').reset();
+        })
+        .catch(error => {
+            showToast('Error: ' + error.message, false);
+        });
+    });
+    
+    // Handle form submission for purchasing vehicle
+    document.getElementById('addPurchaseForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const purchaseData = {
+            vehicleId: document.getElementById('purchaseVehicleId').value,
+            customerName: document.getElementById('customerName').value,
+            contactNumber: document.getElementById('contactNumber').value
+        };
+        
+        fetch('http://localhost:8082/api/purchases', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(purchaseData)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            return response.text();
+        })
+        .then(data => {
+            showToast('Vehicle purchased successfully!');
+            viewVehicles();
+            hideForm();
+            document.getElementById('addPurchaseForm').reset();
+        })
+        .catch(error => {
+            showToast('Error: ' + error.message, false);
+        });
+    });
+    
+    // Handle form submission for updating rental status
+    document.getElementById('updateRentalStatusForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const rentalData = {
+            purchaseId: document.getElementById('rentalStatusPurchaseId').value,
+            rentalStatus: document.getElementById('rentalStatus').value === 'true'
+        };
+        
+        fetch('http://localhost:8082/api/rentals/updateStatus', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(rentalData)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+            return response.text();
+        })
+        .then(data => {
+            showToast('Rental status updated successfully!');
+            viewVehicles();
+            hideForm();
+            document.getElementById('updateRentalStatusForm').reset();
+        })
+        .catch(error => {
+            showToast('Error: ' + error.message, false);
+        });
+    });
+    
+    // Delete a vehicle
+    function deleteVehicle(vehicleID) {
+        if (confirm(`Are you sure you want to delete vehicle ${vehicleID}?`)) {
+            fetch(`http://localhost:8082/api/vehicles/delete/${vehicleID}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+                return response.text();
+            })
+            .then(data => {
+                showToast('Vehicle deleted successfully!');
+                viewVehicles();
+            })
+            .catch(error => {
+                showToast('Error: ' + error.message, false);
+            });
+        }
+    }
+    
+    // Load vehicle data into update form
+    function loadVehicleForUpdate(vehicleID) {
+        // First fetch the vehicle type from the backend
+        fetch(`http://localhost:8082/api/vehicles/type/${vehicleID}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Could not determine vehicle type');
+                return response.json();
+            })
+            .then(typeData => {
+                // Now that we have the vehicle type, find the vehicle in our data
+                const vehicle = allVehicles.find(v => v.vehicleID === vehicleID);
+                if (!vehicle) {
+                    showToast('Vehicle not found!', false);
+                    return;
+                }
+                
+                // Set basic vehicle information
+                document.getElementById('updateVehicleID').value = vehicle.vehicleID;
+                document.getElementById('updateBrand').value = vehicle.brand;
+                document.getElementById('updateModel').value = vehicle.model;
+                document.getElementById('updateRentPrice').value = vehicle.rentPrice;
+                
+                // Set the type from our API response
+                const typeValue = typeData.vehicleType.toString();
+                document.getElementById('updateVehicleType').value = typeValue;
+                
+                // Update form fields for the specific type
+                updateUpdateFormFields();
+                
+                // Add a delay to ensure the form fields are created before setting values
+                setTimeout(() => {
+                    // Set specific fields based on vehicle type
+                    if (typeValue === '1' && vehicle.numSeats !== undefined) { // Car
+                        document.getElementById('updateNumSeats').value = vehicle.numSeats;
+                        document.getElementById('updateHasAC').value = vehicle.hasAC;
+                        document.getElementById('updateTransmissionType').value = vehicle.transmissionType;
+                    } else if (typeValue === '2' && vehicle.bikeType !== undefined) { // Bike
+                        document.getElementById('updateBikeType').value = vehicle.bikeType;
+                        document.getElementById('updateEngineCapacity').value = vehicle.engineCapacity;
+                    } else if (typeValue === '3' && vehicle.hasSlidingDoors !== undefined) { // Van
+                        document.getElementById('updateNumberOfSeat').value = vehicle.numberOfSeat;
+                        document.getElementById('updateHasSlidingDoors').value = vehicle.hasSlidingDoors;
+                    } else if (typeValue === '4' && vehicle.maxLoadCapacity !== undefined) { // Lorry
+                        document.getElementById('updateMaxLoadCapacity').value = vehicle.maxLoadCapacity;
+                        document.getElementById('updateNumAxles').value = vehicle.numAxles;
+                    } else if (typeValue === '5' && vehicle.passengerCapacity !== undefined) { // Bus
+                        document.getElementById('updatePassengerCapacity').value = vehicle.passengerCapacity;
+                        document.getElementById('updateHasWheelchairAccess').value = vehicle.hasWheelchairAccess;
+                    }
+                }, 50); // Increased timeout to ensure DOM updates
+                
+                showUpdateForm();
+            })
+            .catch(error => {
+                showToast('Error: ' + error.message, false);
+            });
+    }
+    
+    // Fetch and display all vehicles
+    function viewVehicles() {
+        fetch('http://localhost:8082/api/vehicles/view')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+                return response.json();
+            })
+            .then(data => {
+                allVehicles = data.filter(v => v !== null);
+                renderVehicles(allVehicles);
+            })
+            .catch(error => {
+                showToast('Error fetching vehicles: ' + error.message, false);
+            });
+    }
+    
+    // Apply filters and search
+    function applyFilter() {
+        const sortBy = document.getElementById('sortBy').value;
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        
+        // When showing all vehicles, use all vehicles from current state
+        let filteredVehicles = [...allVehicles];
+        
+        // Apply search filter
+        if (searchTerm) {
+            filteredVehicles = filteredVehicles.filter(v => 
+                (v.brand && v.brand.toLowerCase().includes(searchTerm)) || 
+                (v.model && v.model.toLowerCase().includes(searchTerm)) ||
+                (v.vehicleID && v.vehicleID.toLowerCase().includes(searchTerm))
+            );
+        }
+        
+        // Apply sorting
+        sortVehicles(filteredVehicles, sortBy);
+        
+        // Render the filtered vehicles
+        renderVehicles(filteredVehicles);
+    }
+    
+    // Sort vehicles based on criteria
+    function sortVehicles(vehicles, sortCriteria) {
+        switch(sortCriteria) {
+            case 'price-asc':
+                vehicles.sort((a, b) => a.rentPrice - b.rentPrice);
+                break;
+            case 'price-desc':
+                vehicles.sort((a, b) => b.rentPrice - a.rentPrice);
+                break;
+            case 'brand':
+                vehicles.sort((a, b) => a.brand.localeCompare(b.brand));
+                break;
+            case 'type':
+                vehicles.sort((a, b) => {
+                    const typeA = getVehicleTypeName(a);
+                    const typeB = getVehicleTypeName(b);
+                    return typeA.localeCompare(typeB);
+                });
+                break;
+            default:
+                // No sorting
+                break;
+        }
+    }
+    
+    // Render the vehicles in the grid
+    function renderVehicles(vehicles) {
+        const list = document.getElementById('vehicleList');
+        
+        if (vehicles.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-car-crash"></i>
+                    <h3>No vehicles found</h3>
+                    <p>There are no vehicles matching your criteria.</p>
+                    <button class="btn" onclick="showAddForm()"><i class="fas fa-plus"></i> Add Vehicle</button>
+                </div>
+            `;
+            return;
+        }
+        
+        list.innerHTML = '';
+        
+        vehicles.forEach(vehicle => {
+            if (!vehicle) return;
+            
+            const vehicleType = getVehicleTypeName(vehicle);
+            const vehicleIcon = getVehicleIcon(vehicle);
+            
+            // Create specs list based on vehicle type
+            let specsHTML = '';
+            
+            if (vehicle.numSeats !== undefined) { // Car
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numSeats} Seats</div>
+                    <div class="spec-item"><i class="fas fa-snowflake"></i> AC: ${vehicle.hasAC}</div>
+                    <div class="spec-item"><i class="fas fa-cogs"></i> ${vehicle.transmissionType}</div>
+                `;
+            } else if (vehicle.bikeType !== undefined) { // Bike
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-tag"></i> ${vehicle.bikeType}</div>
+                    <div class="spec-item"><i class="fas fa-tachometer-alt"></i> ${vehicle.engineCapacity}cc</div>
+                `;
+            } else if (vehicle.hasSlidingDoors !== undefined) { // Van
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numberOfSeat} Seats</div>
+                    <div class="spec-item"><i class="fas fa-door-open"></i> Sliding Doors: ${vehicle.hasSlidingDoors}</div>
+                `;
+            } else if (vehicle.maxLoadCapacity !== undefined) { // Lorry
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-weight-hanging"></i> ${vehicle.maxLoadCapacity}kg</div>
+                    <div class="spec-item"><i class="fas fa-cog"></i> ${vehicle.numAxles} Axles</div>
+                `;
+            } else if (vehicle.passengerCapacity !== undefined) { // Bus
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-users"></i> ${vehicle.passengerCapacity} Passengers</div>
+                    <div class="spec-item"><i class="fas fa-wheelchair"></i> Wheelchair: ${vehicle.hasWheelchairAccess}</div>
+                `;
+            }
+            
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            
+            // Fix image path handling
+            let imagePath = '';
+            let imageUrl = '';
+            
+            if (vehicle.imagePath) {
+                // For absolute URLs
+                if (vehicle.imagePath.startsWith('http')) {
+                    imageUrl = vehicle.imagePath;
+                } 
+                // For relative paths
+                else {
+                    // Ensure path starts with / for proper URL formation
+                    imagePath = vehicle.imagePath.startsWith('/') ? vehicle.imagePath : '/' + vehicle.imagePath;
+                    imageUrl = imagePath;
+                }
+            }
+            
+            // Construct card HTML
+            card.innerHTML = `
+                <span class="vehicle-type-badge"><i class="fas ${vehicleIcon}"></i> ${vehicleType}</span>
+                <div class="image-container">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="${vehicle.brand} ${vehicle.model}" 
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200.png?text=Image+Not+Available';">` : 
+                    `<img src="https://via.placeholder.com/300x200.png?text=No+Image" alt="No Image">`}
+                </div>
+                <div class="vehicle-details">
+                    <div class="vehicle-id">
+                        <span class="vehicle-name">${vehicle.brand} ${vehicle.model}</span>
+                        <small>${vehicle.vehicleID}</small>
+                    </div>
+                    <div class="vehicle-price">Rs ${vehicle.rentPrice.toFixed(2)}<small>/day</small></div>
+                    <div class="specs-container">
+                        ${specsHTML}
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="loadVehicleForUpdate('${vehicle.vehicleID}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn" onclick="initiateVehiclePurchase('${vehicle.vehicleID}')">
+                            <i class="fas fa-shopping-cart"></i> Rent
+                        </button>
+                        <button class="action-btn delete" onclick="deleteVehicle('${vehicle.vehicleID}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            list.appendChild(card);
+        });
+    }
+    
+    // Close form when clicking on overlay
+    document.getElementById('formOverlay').addEventListener('click', hideForm);
+    
+    // Prevent form closure when clicking on form itself
+    document.getElementById('vehicleForm').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    document.getElementById('updateForm').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    document.getElementById('purchaseForm').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    document.getElementById('rentalStatusForm').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Show purchased vehicles
+    function showPurchasedVehicles() {
+        // Change UI to show purchased vehicles
+        document.getElementById('pageTitle').textContent = 'Rented Vehicles';
+        document.getElementById('vehicleList').style.display = 'none';
+        document.getElementById('purchasedVehiclesList').style.display = 'grid';
+        document.querySelector('.filter-container').style.display = 'none';
+        
+        // Fetch purchased vehicles from API
+        fetch('http://localhost:8082/api/purchases')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+                return response.json();
+            })
+            .then(data => {
+                renderPurchasedVehicles(data);
+            })
+            .catch(error => {
+                showToast('Error fetching purchased vehicles: ' + error.message, false);
+                console.error('Error:', error);
+            });
+    }
+    
+    // Return to inventory view
+    function showInventory() {
+        document.getElementById('pageTitle').textContent = 'Vehicle Inventory Management';
+        document.getElementById('vehicleList').style.display = 'grid';
+        document.getElementById('purchasedVehiclesList').style.display = 'none';
+        document.querySelector('.filter-container').style.display = 'flex';
+        viewVehicles();
+    }
+    
+    // Render the purchased vehicles in the grid
+    function renderPurchasedVehicles(purchasedVehicles) {
+        const list = document.getElementById('purchasedVehiclesList');
+        list.className = 'vehicle-grid'; // Use the same grid layout
+        
+        if (!purchasedVehicles || purchasedVehicles.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>No rented vehicles</h3>
+                    <p>There are no rented vehicles in the system.</p>
+                    <button class="btn" onclick="showInventory()"><i class="fas fa-arrow-left"></i> Back to Inventory</button>
+                </div>
+            `;
+            return;
+        }
+        
+        // Add a back button at the top
+        list.innerHTML = `
+            <div class="form-group-full" style="margin-bottom: 20px;">
+                <button class="btn" onclick="showInventory()"><i class="fas fa-arrow-left"></i> Back to Inventory</button>
+            </div>
+        `;
+        
+        purchasedVehicles.forEach(purchase => {
+            if (!purchase || !purchase.vehicle) return;
+            
+            const vehicle = purchase.vehicle;
+            const vehicleType = getVehicleTypeName(vehicle);
+            const vehicleIcon = getVehicleIcon(vehicle);
+            
+            // Create specs list based on vehicle type
+            let specsHTML = '';
+            
+            if (vehicle.numSeats !== undefined) { // Car
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numSeats} Seats</div>
+                    <div class="spec-item"><i class="fas fa-snowflake"></i> AC: ${vehicle.hasAC}</div>
+                    <div class="spec-item"><i class="fas fa-cogs"></i> ${vehicle.transmissionType}</div>
+                `;
+            } else if (vehicle.bikeType !== undefined) { // Bike
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-tag"></i> ${vehicle.bikeType}</div>
+                    <div class="spec-item"><i class="fas fa-tachometer-alt"></i> ${vehicle.engineCapacity}cc</div>
+                `;
+            } else if (vehicle.hasSlidingDoors !== undefined) { // Van
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numberOfSeat} Seats</div>
+                    <div class="spec-item"><i class="fas fa-door-open"></i> Sliding Doors: ${vehicle.hasSlidingDoors}</div>
+                `;
+            } else if (vehicle.maxLoadCapacity !== undefined) { // Lorry
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-weight-hanging"></i> ${vehicle.maxLoadCapacity}kg</div>
+                    <div class="spec-item"><i class="fas fa-cog"></i> ${vehicle.numAxles} Axles</div>
+                `;
+            } else if (vehicle.passengerCapacity !== undefined) { // Bus
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-users"></i> ${vehicle.passengerCapacity} Passengers</div>
+                    <div class="spec-item"><i class="fas fa-wheelchair"></i> Wheelchair: ${vehicle.hasWheelchairAccess}</div>
+                `;
+            }
+            
+            // Add customer info
+            specsHTML += `
+                <div class="spec-item"><i class="fas fa-user"></i> ${purchase.customerName}</div>
+                <div class="spec-item"><i class="fas fa-phone"></i> ${purchase.contactNumber}</div>
+                <div class="spec-item"><i class="fas fa-calendar"></i> ${new Date(purchase.purchaseDate).toLocaleDateString()}</div>
+            `;
+            
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            
+            // Add a rental status badge with corrected labels
+            const statusBadge = purchase.rented ? 
+                `<span class="vehicle-type-badge" style="background-color: var(--danger);"><i class="fas fa-car-side"></i> Rented</span>` : 
+                `<span class="vehicle-type-badge" style="background-color: var(--primary);"><i class="fas fa-car-side"></i> Available</span>`;
+            
+            // Fix image path handling
+            let imagePath = '';
+            let imageUrl = '';
+            
+            if (vehicle.imagePath) {
+                // For absolute URLs
+                if (vehicle.imagePath.startsWith('http')) {
+                    imageUrl = vehicle.imagePath;
+                } 
+                // For relative paths
+                else {
+                    // Ensure path starts with / for proper URL formation
+                    imagePath = vehicle.imagePath.startsWith('/') ? vehicle.imagePath : '/' + vehicle.imagePath;
+                    imageUrl = imagePath;
+                }
+            }
+            
+            // Construct card HTML
+            card.innerHTML = `
+                ${statusBadge}
+                <span class="vehicle-type-badge" style="left: 15px; right: auto;"><i class="fas ${vehicleIcon}"></i> ${vehicleType}</span>
+                <div class="image-container">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="${vehicle.brand} ${vehicle.model}" 
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200.png?text=Image+Not+Available';">` : 
+                    `<img src="https://via.placeholder.com/300x200.png?text=No+Image" alt="No Image">`}
+                </div>
+                <div class="vehicle-details">
+                    <div class="vehicle-id">
+                        <span class="vehicle-name">${vehicle.brand} ${vehicle.model}</span>
+                        <small>${purchase.purchaseId}</small>
+                    </div>
+                    <div class="vehicle-price">Rs ${vehicle.rentPrice.toFixed(2)}<small>/day</small></div>
+                    <div class="specs-container">
+                        ${specsHTML}
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="showRentalStatusUpdate('${purchase.purchaseId}', '${vehicle.brand} ${vehicle.model}', ${purchase.rented})">
+                            <i class="fas fa-exchange-alt"></i> Change Status
+                        </button>
+                        <button class="action-btn delete" onclick="deletePurchase('${purchase.purchaseId}')">
+                            <i class="fas fa-undo"></i> Return Vehicle
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            list.appendChild(card);
+        });
+    }
+    
+    // Filter purchased vehicles by status
+    function filterPurchasedVehicles(status) {
+        const allCards = document.querySelectorAll('#purchasedVehiclesList .vehicle-card');
+        
+        if (status === 'all') {
+            allCards.forEach(card => card.style.display = 'block');
+        } else if (status === 'available') {
+            allCards.forEach(card => {
+                card.style.display = card.dataset.status === 'available' ? 'block' : 'none';
+            });
+        } else if (status === 'rented') {
+            allCards.forEach(card => {
+                card.style.display = card.dataset.status === 'rented' ? 'block' : 'none';
+            });
+        }
+    }
+    
+    // Launch purchase form for a specific vehicle
+    function initiateVehiclePurchase(vehicleId) {
+        // Find the vehicle in our data
+        const vehicle = allVehicles.find(v => v.vehicleID === vehicleId);
+        if (!vehicle) {
+            showToast('Vehicle not found!', false);
+            return;
+        }
+        
+        // Set the form fields
+        document.getElementById('purchaseVehicleId').value = vehicleId;
+        document.getElementById('purchaseVehicleTitle').innerText = `Selected Vehicle: ${vehicle.brand} ${vehicle.model}`;
+        
+        let vehicleDetails = '';
+        if (vehicle.numSeats !== undefined) { // Car
+            vehicleDetails = `Car: ${vehicle.numSeats} Seats, ${vehicle.hasAC ? 'with AC' : 'no AC'}, ${vehicle.transmissionType}`;
+        } else if (vehicle.bikeType !== undefined) { // Bike
+            vehicleDetails = `Bike: ${vehicle.bikeType}, ${vehicle.engineCapacity}cc`;
+        } else if (vehicle.hasSlidingDoors !== undefined) { // Van
+            vehicleDetails = `Van: ${vehicle.numberOfSeat} Seats, ${vehicle.hasSlidingDoors === 'Yes' ? 'with sliding doors' : 'no sliding doors'}`;
+        } else if (vehicle.maxLoadCapacity !== undefined) { // Lorry
+            vehicleDetails = `Lorry: ${vehicle.maxLoadCapacity}kg max load, ${vehicle.numAxles} axles`;
+        } else if (vehicle.passengerCapacity !== undefined) { // Bus
+            vehicleDetails = `Bus: ${vehicle.passengerCapacity} passengers, ${vehicle.hasWheelchairAccess === 'Yes' ? 'with wheelchair access' : 'no wheelchair access'}`;
+        }
+        
+        document.getElementById('purchaseVehicleDetails').innerText = vehicleDetails;
+        
+        // Show the form
+        showPurchaseForm();
+    }
+    
+    // Launch rental status update form for a purchased vehicle
+    function showRentalStatusUpdate(purchaseId, vehicleName, isCurrentlyRented) {
+        // Set the form fields
+        document.getElementById('rentalStatusPurchaseId').value = purchaseId;
+        document.getElementById('rentalStatusVehicleTitle').innerText = `Selected Vehicle: ${vehicleName}`;
+        document.getElementById('rentalStatusVehicleDetails').innerText = `Current Status: ${isCurrentlyRented ? 'Rented Out' : 'Available'}`;
+        document.getElementById('rentalStatus').value = isCurrentlyRented ? 'true' : 'false';
+        
+        // Show the form
+        showRentalStatusForm();
+    }
+    
+    // Delete a purchase and return vehicle to inventory
+    function deletePurchase(purchaseId) {
+        if (confirm(`Are you sure you want to return this vehicle to inventory?`)) {
+            fetch(`http://localhost:8082/api/purchases/${purchaseId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok ' + response.statusText);
+                return response.text();
+            })
+            .then(data => {
+                showToast('Vehicle returned to inventory successfully!');
+                showPurchasedVehicles(); // Refresh the purchased vehicles list
+            })
+            .catch(error => {
+                showToast('Error: ' + error.message, false);
+            });
+        }
+    }
+    
+    // Add purchase button to vehicle cards
+    function renderVehicles(vehicles) {
+        const list = document.getElementById('vehicleList');
+        
+        if (vehicles.length === 0) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-car-crash"></i>
+                    <h3>No vehicles found</h3>
+                    <p>There are no vehicles matching your criteria.</p>
+                    <button class="btn" onclick="showAddForm()"><i class="fas fa-plus"></i> Add Vehicle</button>
+                </div>
+            `;
+            return;
+        }
+        
+        list.innerHTML = '';
+        
+        vehicles.forEach(vehicle => {
+            if (!vehicle) return;
+            
+            const vehicleType = getVehicleTypeName(vehicle);
+            const vehicleIcon = getVehicleIcon(vehicle);
+            
+            // Create specs list based on vehicle type
+            let specsHTML = '';
+            
+            if (vehicle.numSeats !== undefined) { // Car
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numSeats} Seats</div>
+                    <div class="spec-item"><i class="fas fa-snowflake"></i> AC: ${vehicle.hasAC}</div>
+                    <div class="spec-item"><i class="fas fa-cogs"></i> ${vehicle.transmissionType}</div>
+                `;
+            } else if (vehicle.bikeType !== undefined) { // Bike
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-tag"></i> ${vehicle.bikeType}</div>
+                    <div class="spec-item"><i class="fas fa-tachometer-alt"></i> ${vehicle.engineCapacity}cc</div>
+                `;
+            } else if (vehicle.hasSlidingDoors !== undefined) { // Van
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-user"></i> ${vehicle.numberOfSeat} Seats</div>
+                    <div class="spec-item"><i class="fas fa-door-open"></i> Sliding Doors: ${vehicle.hasSlidingDoors}</div>
+                `;
+            } else if (vehicle.maxLoadCapacity !== undefined) { // Lorry
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-weight-hanging"></i> ${vehicle.maxLoadCapacity}kg</div>
+                    <div class="spec-item"><i class="fas fa-cog"></i> ${vehicle.numAxles} Axles</div>
+                `;
+            } else if (vehicle.passengerCapacity !== undefined) { // Bus
+                specsHTML += `
+                    <div class="spec-item"><i class="fas fa-users"></i> ${vehicle.passengerCapacity} Passengers</div>
+                    <div class="spec-item"><i class="fas fa-wheelchair"></i> Wheelchair: ${vehicle.hasWheelchairAccess}</div>
+                `;
+            }
+            
+            const card = document.createElement('div');
+            card.className = 'vehicle-card';
+            
+            // Fix image path handling
+            let imagePath = '';
+            let imageUrl = '';
+            
+            if (vehicle.imagePath) {
+                // For absolute URLs
+                if (vehicle.imagePath.startsWith('http')) {
+                    imageUrl = vehicle.imagePath;
+                } 
+                // For relative paths
+                else {
+                    // Ensure path starts with / for proper URL formation
+                    imagePath = vehicle.imagePath.startsWith('/') ? vehicle.imagePath : '/' + vehicle.imagePath;
+                    imageUrl = imagePath;
+                }
+            }
+            
+            // Construct card HTML
+            card.innerHTML = `
+                <span class="vehicle-type-badge"><i class="fas ${vehicleIcon}"></i> ${vehicleType}</span>
+                <div class="image-container">
+                    ${imageUrl ? `<img src="${imageUrl}" alt="${vehicle.brand} ${vehicle.model}" 
+                        onerror="this.onerror=null; this.src='https://via.placeholder.com/300x200.png?text=Image+Not+Available';">` : 
+                    `<img src="https://via.placeholder.com/300x200.png?text=No+Image" alt="No Image">`}
+                </div>
+                <div class="vehicle-details">
+                    <div class="vehicle-id">
+                        <span class="vehicle-name">${vehicle.brand} ${vehicle.model}</span>
+                        <small>${vehicle.vehicleID}</small>
+                    </div>
+                    <div class="vehicle-price">Rs ${vehicle.rentPrice.toFixed(2)}<small>/day</small></div>
+                    <div class="specs-container">
+                        ${specsHTML}
+                    </div>
+                    <div class="card-actions">
+                        <button class="action-btn" onclick="loadVehicleForUpdate('${vehicle.vehicleID}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn" onclick="initiateVehiclePurchase('${vehicle.vehicleID}')">
+                            <i class="fas fa-shopping-cart"></i> Rent
+                        </button>
+                        <button class="action-btn delete" onclick="deleteVehicle('${vehicle.vehicleID}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            list.appendChild(card);
+        });
+    }
+</script>
+</body>
+</html>
