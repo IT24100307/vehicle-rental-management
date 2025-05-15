@@ -1,0 +1,9 @@
+Customer Service Staff Details
+==============================
+ID: 1
+First Name: cha
+Last Name: gfgg
+Email: fc@gmail.com
+Phone Number: 119
+Department: it
+------------------------------
