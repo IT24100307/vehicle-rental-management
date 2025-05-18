@@ -2,100 +2,141 @@ package com.system.project1.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "customers")
 public class Customer {
     @Id
-    private String cusID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int customerId;
 
-    private String cusName;
-    private int contactNum;
+    private String name;
+    private String contactNumber;
     private int driverLicenseNumber;
-    private int rentedVehicle;
-    private int nodays;
-    private boolean returnrented;
 
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    private String address;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<PurchasedVehicle> rentedVehiclesList;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<EventBooking> eventBookings;
+
+    // Constructors
     public Customer() {
+        this.rentedVehiclesList = new ArrayList<>();
+        this.eventBookings = new ArrayList<>();
     }
 
-    public Customer(String cusID, String cusName, int contactNum, int driverLicenseNumber, int rentedVehicle) {
-        this.cusID = cusID;
-        this.cusName = cusName;
-        this.contactNum = contactNum;
+    public Customer(String name, String contactNumber, int driverLicenseNumber, String email, String password) {
+        this.name = name;
+        this.contactNumber = contactNumber;
         this.driverLicenseNumber = driverLicenseNumber;
-        this.rentedVehicle = rentedVehicle;
+        this.email = email;
+        this.password = password;
+        this.rentedVehiclesList = new ArrayList<>();
+        this.eventBookings = new ArrayList<>();
+    }
+
+    // Methods
+    public void rentVehicle(Vehicle v, int days) {
+        PurchasedVehicle purchasedVehicle = new PurchasedVehicle(v, days, this);
+        rentedVehiclesList.add(purchasedVehicle);
+    }
+
+    public void bookEvent(Event event, java.util.Date eventDate) {
+        EventBooking booking = new EventBooking(event, this, eventDate);
+        eventBookings.add(booking);
     }
 
     // Getters and Setters
-    public String getCusID() {
-
-        return cusID;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCusID(String cusID) {
-
-        this.cusID = cusID;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
-    public String getCusName() {
-
-        return cusName;
+    public String getName() {
+        return name;
     }
 
-    public void setCusName(String cusName) {
-
-        this.cusName = cusName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getContactNum() {
-
-        return contactNum;
+    public String getContactNumber() {
+        return contactNumber;
     }
 
-    public void setContactNum(int contactNum) {
-
-        this.contactNum = contactNum;
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
 
     public int getDriverLicenseNumber() {
-
         return driverLicenseNumber;
     }
 
     public void setDriverLicenseNumber(int driverLicenseNumber) {
-
         this.driverLicenseNumber = driverLicenseNumber;
     }
 
-    public int getRentedVehicle() {
-
-        return rentedVehicle;
+    public String getEmail() {
+        return email;
     }
 
-    public void setRentedVehicle(int rentedVehicle) {
-
-        this.rentedVehicle = rentedVehicle;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public int getNodays() {
-
-        return nodays;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNodays(int nodays) {
-
-        this.nodays = nodays;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public boolean isReturnrented() {
-
-        return returnrented;
+    public String getAddress() {
+        return address;
     }
 
-    public void setReturnrented(boolean returnrented) {
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-        this.returnrented = returnrented;
+    public List<PurchasedVehicle> getRentedVehiclesList() {
+        return rentedVehiclesList;
+    }
+
+    public void setRentedVehiclesList(List<PurchasedVehicle> rentedVehiclesList) {
+        this.rentedVehiclesList = rentedVehiclesList;
+    }
+
+    public List<EventBooking> getEventBookings() {
+        return eventBookings;
+    }
+
+    public void setEventBookings(List<EventBooking> eventBookings) {
+        this.eventBookings = eventBookings;
+    }
+
+    public void viewRentedHistory() {
+        for (PurchasedVehicle pv : rentedVehiclesList) {
+            System.out.println(pv);
+        }
     }
 }

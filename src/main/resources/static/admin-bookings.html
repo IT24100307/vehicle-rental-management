@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Booking Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System - Admin
+        </div>
+        <nav>
+            <ul>
+                <li><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="admin-inventory.html"><i class="fas fa-warehouse"></i> Inventory</a></li>
+                <li><a href="admin-events.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
+                <li><a href="admin-customers.html"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="admin-bookings.html" class="active"><i class="fas fa-book"></i> Bookings</a></li>
+                <li class="user-menu">
+                    <a href="#" id="userMenuButton"><i class="fas fa-user-shield"></i> <span id="userName">Admin</span></a>
+                    <div class="dropdown-menu">
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="section-header">
+            <h1><i class="fas fa-book"></i> Event Booking Management</h1>
+        </section>
+
+        <section class="admin-filters">
+            <div class="filter-group">
+                <label for="eventTypeFilter">Event Type:</label>
+                <select id="eventTypeFilter">
+                    <option value="all">All Types</option>
+                    <option value="WEDDING">Wedding</option>
+                    <option value="PHOTOSHOOT">Photoshoot</option>
+                    <option value="AIRPORT_TRANSFER">Airport Transfer</option>
+                    <option value="CORPORATE">Corporate Event</option>
+                    <option value="TOUR">Tour</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter">Status:</label>
+                <select id="statusFilter">
+                    <option value="all">All</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="CONFIRMED">Confirmed</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="dateRangeFilter">Date Range:</label>
+                <input type="date" id="startDateFilter">
+                <span>to</span>
+                <input type="date" id="endDateFilter">
+            </div>
+            <button id="applyFiltersBtn" class="btn btn-primary">Apply Filters</button>
+        </section>
+
+        <section class="admin-bookings-table">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Event</th>
+                        <th>Event Type</th>
+                        <th>Booking Date</th>
+                        <th>Event Date</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingsTableBody">
+                    <!-- Booking rows will be dynamically added here -->
+                    <tr>
+                        <td colspan="9" class="loading-cell">
+                            <i class="fas fa-spinner fa-spin"></i> Loading bookings...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Empty state message -->
+        <div id="emptyBookings" class="empty-state" style="display: none;">
+            <i class="fas fa-calendar-times fa-3x"></i>
+            <h2>No Bookings Found</h2>
+            <p>There are no bookings matching your current filters. Adjust your filters to see different results.</p>
+        </div>
+    </main>
+
+    <!-- Booking Details Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalBookingTitle">Booking Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="booking-details">
+                    <div class="event-image">
+                        <img id="modalEventImage" src="" alt="Event Image">
+                    </div>
+                    <div class="booking-info">
+                        <p><strong>Booking ID:</strong> <span id="modalBookingId"></span></p>
+                        <p><strong>Event:</strong> <span id="modalEventName"></span></p>
+                        <p><strong>Event Type:</strong> <span id="modalEventType"></span></p>
+                        <p><strong>Customer:</strong> <span id="modalCustomerName"></span></p>
+                        <p><strong>Contact:</strong> <span id="modalCustomerContact"></span></p>
+                        <p><strong>Date Booked:</strong> <span id="modalBookingDate"></span></p>
+                        <p><strong>Event Date:</strong> <span id="modalEventDate"></span></p>
+                        <p><strong>Status:</strong> <span id="modalBookingStatus"></span></p>
+                        <p><strong>Total Price:</strong> $<span id="modalTotalPrice"></span></p>
+                        <p><strong>Special Requirements:</strong> <span id="modalSpecialRequirements"></span></p>
+                    </div>
+                </div>
+                
+                <div class="event-vehicles">
+                    <h3>Vehicles Included:</h3>
+                    <div id="modalEventVehicles" class="vehicle-grid">
+                        <!-- Vehicle cards will be added here -->
+                    </div>
+                </div>
+                
+                <div class="booking-actions" id="bookingAdminActions">
+                    <h3>Update Status</h3>
+                    <div class="status-buttons">
+                        <button data-status="CONFIRMED" class="btn btn-primary">Confirm</button>
+                        <button data-status="COMPLETED" class="btn btn-success">Mark as Completed</button>
+                        <button data-status="CANCELLED" class="btn btn-danger">Cancel Booking</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 Vehicle Rental System. All rights reserved.</p>
+    </footer>
+
+    <script src="js/common.js"></script>
+    <script src="js/admin-bookings.js"></script>
+</body>
+</html>
