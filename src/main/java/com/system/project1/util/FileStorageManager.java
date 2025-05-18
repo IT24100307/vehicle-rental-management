@@ -386,18 +386,30 @@ public class FileStorageManager {
                         } catch (ParseException e) {
                             System.err.println("Error parsing end date: " + parts[9]);
                         }
-                    }
-
-                    // Handle associated vehicles if present
+                    } // Handle associated vehicles if present
                     if (parts.length > 10 && !parts[10].isEmpty()) {
                         String[] vehicleIds = parts[10].split(",");
                         List<String> vehicleIdList = new ArrayList<>();
+                        List<Vehicle> vehicleList = new ArrayList<>();
+
                         for (String id : vehicleIds) {
                             if (!id.trim().isEmpty()) {
-                                vehicleIdList.add(id.trim());
+                                String trimmedId = id.trim();
+                                vehicleIdList.add(trimmedId);
+
+                                // Try to find the actual vehicle object
+                                Optional<Vehicle> vehicleOpt = findVehicleById(trimmedId);
+                                if (vehicleOpt.isPresent()) {
+                                    vehicleList.add(vehicleOpt.get());
+                                }
                             }
                         }
+
+                        // Set both the vehicle IDs and the actual vehicle objects
                         event.setVehicleIds(vehicleIdList);
+                        if (!vehicleList.isEmpty()) {
+                            event.setVehicles(vehicleList);
+                        }
                     }
 
                     events.add(event);

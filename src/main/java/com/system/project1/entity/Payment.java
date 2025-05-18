@@ -27,6 +27,11 @@ public class Payment {
     @JoinColumn(name = "purchased_vehicle_id")
     private PurchasedVehicle purchasedVehicle;
 
+    // Relationship with EventBooking
+    @OneToOne
+    @JoinColumn(name = "event_booking_id")
+    private EventBooking eventBooking;
+
     // Status of payment
     private String status; // "PENDING", "COMPLETED", "FAILED"
 
@@ -118,6 +123,14 @@ public class Payment {
 
     public void setPurchasedVehicle(PurchasedVehicle purchasedVehicle) {
         this.purchasedVehicle = purchasedVehicle;
+    }
+
+    public EventBooking getEventBooking() {
+        return eventBooking;
+    }
+
+    public void setEventBooking(EventBooking eventBooking) {
+        this.eventBooking = eventBooking;
     }
 
     public String getStatus() {

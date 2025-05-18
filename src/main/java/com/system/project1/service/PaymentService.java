@@ -1,15 +1,12 @@
 package com.system.project1.service;
 
-import com.system.project1.entity.EventBooking;
 import com.system.project1.entity.Payment;
-import com.system.project1.entity.PurchasedVehicle;
 import com.system.project1.util.FileStorageManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -93,14 +90,12 @@ public class PaymentService {
                     .findEventBookingByBookingId(bookingId);
 
             if (optionalBooking.isPresent()) {
-                EventBooking booking = optionalBooking.get();
-
-                // Set payment amount based on event price
+                EventBooking booking = optionalBooking.get(); // Set payment amount based on event price
                 double amount = booking.getTotalPrice();
                 paymentDetails.setAmount(amount);
 
-                // Set booking as the reference instead of a purchased vehicle
-                // We'll need to handle this in the file storage manager
+                // Set the event booking reference in the payment
+                paymentDetails.setEventBooking(booking);
 
                 // Process payment based on payment method
                 if ("CARD".equalsIgnoreCase(paymentDetails.getPaymentMethod()) ||
@@ -139,6 +134,15 @@ public class PaymentService {
         return getAllPayments().stream()
                 .filter(p -> p.getPurchasedVehicle() != null &&
                         p.getPurchasedVehicle().getPurchaseId().equals(purchaseId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    // Get payment for an event booking
+    public Payment getPaymentForEventBooking(String bookingId) {
+        return getAllPayments().stream()
+                .filter(p -> p.getEventBooking() != null &&
+                        p.getEventBooking().getBookingId().equals(bookingId))
                 .findFirst()
                 .orElse(null);
     }

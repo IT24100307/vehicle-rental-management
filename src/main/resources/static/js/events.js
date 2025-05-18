@@ -418,16 +418,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Close modal
             bookEventModal.style.display = 'none';
             
-            // Show success message
-            showAlert('Success', 'Your event booking has been confirmed!', 'success');
-            
             // Reset form
             bookEventForm.reset();
             
-            // Redirect to bookings page after a short delay
-            setTimeout(() => {
-                window.location.href = 'event-bookings.html';
-            }, 2000);
+            // Redirect to payment page with booking ID
+            window.location.href = `payment.html?eventBookingId=${data.id}`;
         })
         .catch(error => {
             console.error('Error booking event:', error);

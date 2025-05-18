@@ -9,21 +9,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const customer = checkAuth();
     if (!customer) return;
     
-    // Get purchase ID from URL parameters
+    // Get purchase ID or event booking ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const purchaseId = urlParams.get('purchaseId');
+    const eventBookingId = urlParams.get('eventBookingId');
     
-    if (!purchaseId) {
-        alert('No rental ID provided. Redirecting to rentals page.');
-        window.location.href = 'rentals.html';
+    if (!purchaseId && !eventBookingId) {
+        alert('No rental or event booking ID provided. Redirecting to home page.');
+        window.location.href = 'index.html';
         return;
     }
     
     // Initialize payment methods
     initPaymentMethods();
     
-    // Load rental details
-    loadRentalDetails(purchaseId);
+    // Set the payment type (rental or event booking)
+    if (purchaseId) {
+        // Rental payment
+        currentRental = { purchaseId: purchaseId, type: 'RENTAL' };
+        loadRentalDetails(purchaseId);
+    } else if (eventBookingId) {
+        // Event booking payment
+        currentRental = { purchaseId: eventBookingId, type: 'EVENT' };
+        loadEventBookingDetails(eventBookingId);
+    }
     
     // Init card form
     initCardForm();
@@ -86,6 +95,68 @@ async function loadRentalDetails(purchaseId) {
             </div>
         `;
     }
+}
+
+// Load event booking details
+async function loadEventBookingDetails(eventBookingId) {
+    try {
+        const bookingDetails = document.getElementById('vehicleDetails');
+        bookingDetails.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading booking details...</div>';
+        
+        // Call the API to get event booking details
+        const booking = await apiRequest(`/api/event-bookings/${eventBookingId}`);
+        
+        if (!booking) {
+            bookingDetails.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>Event booking not found. Please try again or contact support.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Save the booking details to the global state
+        currentRental = booking;
+        currentRental.type = 'EVENT';
+        
+        // Format the date for display
+        const bookingDate = new Date(booking.bookingDate);
+        
+        // Show event booking details
+        bookingDetails.innerHTML = `
+            <div class="vehicle-card">
+                <div class="vehicle-image">
+                    <img src="${booking.event.imagePath || 'images/event-placeholder.jpg'}" alt="${booking.event.name}">
+                </div>
+                <div class="vehicle-info">
+                    <h3>${booking.event.name}</h3>
+                    <p><strong>Type:</strong> ${formatEventType(booking.event.eventType)}</p>
+                    <p><strong>Date:</strong> ${formatDate(bookingDate)}</p>
+                    <p><strong>Duration:</strong> ${booking.event.durationHours} hours</p>
+                    <p><strong>Total:</strong> <span class="price">Rs. ${booking.event.price.toFixed(2)}</span></p>
+                </div>
+            </div>
+        `;
+
+        // Update page header
+        document.querySelector('.section-header h1').innerHTML = '<i class="fas fa-credit-card"></i> Payment - Event Booking';
+    } catch (error) {
+        console.error('Error loading event booking details:', error);
+        const bookingDetails = document.getElementById('vehicleDetails');
+        bookingDetails.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Failed to load event booking details: ${error.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Helper function to format event type
+function formatEventType(type) {
+    // Convert SNAKE_CASE to Title Case
+    return type.toLowerCase().replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 // Initialize payment methods
@@ -186,9 +257,7 @@ function initCardForm() {
             // Show loading state
             const submitBtn = form.querySelector('button[type="submit"]');
             submitBtn.textContent = 'Processing...';
-            submitBtn.disabled = true;
-            
-            // Create payment object
+            submitBtn.disabled = true;            // Create payment object
             const payment = {
                 paymentMethod: 'CARD',
                 cardHolderName: cardHolderName,
@@ -198,7 +267,11 @@ function initCardForm() {
             };
             
             // Process payment
-            const response = await apiRequest(`/payments/process/${currentRental.purchaseId}`, 'POST', payment);
+            let endpoint = currentRental.type === 'EVENT' 
+                ? `/api/payments/event/${currentRental.purchaseId}` 
+                : `/api/payments/process/${currentRental.purchaseId}`;
+            
+            const response = await apiRequest(endpoint, 'POST', payment);
             
             // Show confirmation modal
             showPaymentConfirmation(response.payment);
@@ -240,15 +313,17 @@ function initCashPayment() {
         try {
             // Show loading state
             confirmBtn.textContent = 'Processing...';
-            confirmBtn.disabled = true;
-            
-            // Create payment object
+            confirmBtn.disabled = true;            // Create payment object
             const payment = {
                 paymentMethod: 'CASH'
             };
             
             // Process payment
-            const response = await apiRequest(`/payments/process/${currentRental.purchaseId}`, 'POST', payment);
+            let endpoint = currentRental.type === 'EVENT' 
+                ? `/api/payments/event/${currentRental.purchaseId}` 
+                : `/api/payments/process/${currentRental.purchaseId}`;
+            
+            const response = await apiRequest(endpoint, 'POST', payment);
             
             // Show confirmation modal
             showPaymentConfirmation(response.payment);
@@ -262,14 +337,33 @@ function initCashPayment() {
             confirmBtn.disabled = false;
         }
     });
-}
-
-// Initialize confirmation modal
+}    // Initialize confirmation modal
 function initConfirmationModal() {
     const viewRentalsBtn = document.getElementById('viewRentalsBtn');
     
     viewRentalsBtn.addEventListener('click', function() {
-        window.location.href = 'rentals.html';
+        // Redirect to the appropriate page based on the payment type
+        if (currentRental && currentRental.type === 'EVENT') {
+            window.location.href = 'event-bookings.html';
+        } else {
+            window.location.href = 'rentals.html';
+        }
+    });
+    
+    // Update button text and rental link when DOM content is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        if (currentRental && currentRental.type === 'EVENT') {
+            viewRentalsBtn.textContent = 'View My Event Bookings';
+            
+            // Also update the "My Rentals" link in the header to point to event-bookings if paying for an event
+            const rentalLinks = document.querySelectorAll('a[href="rentals.html"]');
+            rentalLinks.forEach(link => {
+                if (link.textContent.includes('My Rentals')) {
+                    link.textContent = link.textContent.replace('My Rentals', 'My Event Bookings');
+                    link.href = 'event-bookings.html';
+                }
+            });
+        }
     });
 }
 
@@ -277,6 +371,17 @@ function initConfirmationModal() {
 function showPaymentConfirmation(payment) {
     const modal = document.getElementById('paymentConfirmationModal');
     const paymentDetails = document.getElementById('paymentDetails');
+    const viewRentalsBtn = document.getElementById('viewRentalsBtn');
+    
+    // Set confirmation title based on payment type
+    const confirmTitle = document.querySelector('#paymentConfirmationModal .modal-header h2');
+    if (currentRental && currentRental.type === 'EVENT') {
+        confirmTitle.textContent = 'Event Booking Confirmation';
+        viewRentalsBtn.textContent = 'View My Event Bookings';
+    } else {
+        confirmTitle.textContent = 'Payment Confirmation';
+        viewRentalsBtn.textContent = 'View My Rentals';
+    }
     
     // Build payment details HTML
     let detailsHtml = `
@@ -293,6 +398,15 @@ function showPaymentConfirmation(payment) {
         detailsHtml += `
             <div><strong>Card Type:</strong> ${payment.cardType}</div>
             <div><strong>Card Number:</strong> ${payment.cardNumber}</div>
+        `;
+    }
+    
+    // Add event-specific message if it's an event payment
+    if (currentRental && currentRental.type === 'EVENT') {
+        detailsHtml += `
+            <div class="success-message">
+                <p>Your event booking has been confirmed and payment processed successfully!</p>
+            </div>
         `;
     }
     

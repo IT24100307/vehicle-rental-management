@@ -1,7 +1,6 @@
 package com.system.project1.controller;
 
 import com.system.project1.entity.Payment;
-import com.system.project1.entity.PurchasedVehicle;
 import com.system.project1.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,9 +44,8 @@ public class PaymentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "Payment not found with ID: " + paymentId));
         }
-    }
+    } // Get payment for a rental
 
-    // Get payment for a rental
     @GetMapping("/rental/{purchaseId}")
     public ResponseEntity<?> getPaymentForRental(@PathVariable String purchaseId) {
         Payment payment = paymentService.getPaymentForRental(purchaseId);
@@ -57,6 +55,36 @@ public class PaymentController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("message", "No payment found for rental ID: " + purchaseId));
+        }
+    }
+
+    // Process payment for an event booking
+    @PostMapping("/event/{eventBookingId}")
+    public ResponseEntity<?> processEventPayment(@PathVariable String eventBookingId,
+            @RequestBody Payment paymentDetails) {
+        Payment payment = paymentService.processEventPayment(eventBookingId, paymentDetails);
+
+        if (payment != null) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of(
+                            "message", "Event payment processed successfully",
+                            "payment", payment));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Event booking not found with ID: " + eventBookingId));
+        }
+    }
+
+    // Get payment for an event booking
+    @GetMapping("/event/{eventBookingId}")
+    public ResponseEntity<?> getPaymentForEvent(@PathVariable String eventBookingId) {
+        Payment payment = paymentService.getPaymentForEventBooking(eventBookingId);
+
+        if (payment != null) {
+            return ResponseEntity.ok(payment);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "No payment found for event booking ID: " + eventBookingId));
         }
     }
 }

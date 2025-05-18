@@ -3,36 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Rental System - Complete Profile</title>
+    <title>Vehicle Rental System - Manage Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .tab:hover:not(.active) {
+            background-color: #f1f1f1;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .profile-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .profile-info p {
+            margin: 10px 0;
+        }
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+        .success-message {
+            color: green;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="card profile-card">
             <div class="card-header">
-                <h2><i class="fas fa-user-edit"></i> Complete Your Profile</h2>
-                <p>Add additional information to your profile (optional)</p>
+                <h2><i class="fas fa-user-cog"></i> Manage Your Profile</h2>
+                <p>View, update, or delete your account information</p>
             </div>
             <div class="card-body">
-                <form id="profileForm">
-                    <div class="form-group">
-                        <label for="address"><i class="fas fa-home"></i> Address</label>
-                        <textarea id="address" name="address" placeholder="Enter your full address"></textarea>
+                <div class="tab-container">
+                    <div class="tab-nav">
+                        <div class="tab active" data-tab="view"><i class="fas fa-eye"></i> View Profile</div>
+                        <div class="tab" data-tab="update"><i class="fas fa-edit"></i> Update Profile</div>
+                        <div class="tab" data-tab="delete"><i class="fas fa-trash"></i> Delete Account</div>
                     </div>
                     
-                    <!-- Additional fields can be added here -->
-                    
-                    <div class="form-group button-group">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Information
-                        </button>
-                        <button type="button" id="skipButton" class="btn btn-secondary">
-                            <i class="fas fa-forward"></i> Skip for Now
+                    <!-- View Profile Tab -->
+                    <div id="view-tab" class="tab-content active">
+                        <h3>Your Profile Information</h3>
+                        <div class="profile-info">
+                            <p><strong><i class="fas fa-id-card"></i> Customer ID:</strong> <span id="customer-id"></span></p>
+                            <p><strong><i class="fas fa-user"></i> Name:</strong> <span id="customer-name"></span></p>
+                            <p><strong><i class="fas fa-envelope"></i> Email:</strong> <span id="customer-email"></span></p>
+                            <p><strong><i class="fas fa-phone"></i> Contact Number:</strong> <span id="customer-contact"></span></p>
+                            <p><strong><i class="fas fa-id-badge"></i> Driver License:</strong> <span id="customer-license"></span></p>
+                            <p><strong><i class="fas fa-home"></i> Address:</strong> <span id="customer-address"></span></p>
+                        </div>
+                        <button type="button" id="goToUpdateBtn" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Update Your Information
                         </button>
                     </div>
-                </form>
+                    
+                    <!-- Update Profile Tab -->
+                    <div id="update-tab" class="tab-content">
+                        <h3>Update Your Information</h3>
+                        <div id="success-message" class="success-message"></div>
+                        <form id="profileForm">
+                            <div class="form-group">
+                                <label for="name"><i class="fas fa-user"></i> Name</label>
+                                <input type="text" id="name" name="name" placeholder="Your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contactNumber"><i class="fas fa-phone"></i> Contact Number</label>
+                                <input type="tel" id="contactNumber" name="contactNumber" placeholder="Your phone number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="driverLicenseNumber"><i class="fas fa-id-badge"></i> Driver License Number</label>
+                                <input type="text" id="driverLicenseNumber" name="driverLicenseNumber" placeholder="Your driver license number" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address"><i class="fas fa-home"></i> Address</label>
+                                <textarea id="address" name="address" placeholder="Enter your full address" required></textarea>
+                            </div>
+                            
+                            <div class="form-group button-group">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                                <button type="button" id="cancelUpdateBtn" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Delete Account Tab -->
+                    <div id="delete-tab" class="tab-content">
+                        <h3>Delete Your Account</h3>
+                        <div class="alert-box">
+                            <p><i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> This action cannot be undone. All your account data will be permanently deleted.</p>
+                            <p>To confirm deletion, please enter your password below:</p>
+                        </div>
+                        <form id="deleteAccountForm">
+                            <div class="form-group">
+                                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn delete-btn">
+                                    <i class="fas fa-trash"></i> Permanently Delete My Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
                 <div id="error-message" class="error-message"></div>
+                
+                <div class="back-to-inventory">
+                    <button type="button" id="backToInventoryBtn" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Inventory
+                    </button>
+                </div>
             </div>
         </div>
     </div>

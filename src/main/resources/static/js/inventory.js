@@ -946,8 +946,7 @@ function initRentVehicleModal() {
             if (data && data.purchaseId) {
                 // Redirect to the payment page with the purchase ID
                 window.location.href = `payment.html?purchaseId=${data.purchaseId}`;
-            } else {
-                // Show success message without redirect
+            } else {                // Show success message without redirect
                 alert(`You have successfully rented the ${selectedVehicle.brand} ${selectedVehicle.model} for ${days} days.`);
                 
                 // Remove the rented vehicle from the vehicles array
