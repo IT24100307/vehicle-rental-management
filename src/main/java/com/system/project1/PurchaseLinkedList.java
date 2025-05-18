@@ -1,7 +1,6 @@
 package com.system.project1;
 
 import com.system.project1.entity.PurchasedVehicle;
-import com.system.project1.entity.Vehicle;
 import org.springframework.stereotype.Service;
 
 @Service

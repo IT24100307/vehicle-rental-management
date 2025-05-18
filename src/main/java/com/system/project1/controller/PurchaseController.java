@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.system.project1.PurchaseLinkedList;
-import com.system.project1.VehicleInventory;
 import com.system.project1.entity.PurchasedVehicle;
-import com.system.project1.entity.Vehicle;
 
 @RestController
 @RequestMapping("/api/purchases")
