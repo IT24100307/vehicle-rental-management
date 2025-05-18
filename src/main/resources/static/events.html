@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Special Events</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System
+        </div>
+        <nav>
+            <ul>
+                <li><a href="inventory.html"><i class="fas fa-list"></i> Inventory</a></li>
+                <li><a href="events.html" class="active"><i class="fas fa-calendar-alt"></i> Special Events</a></li>
+                <li><a href="discounts.html"><i class="fas fa-percent"></i> Discounts</a></li>
+                <li><a href="rentals.html"><i class="fas fa-file-contract"></i> My Rentals</a></li>
+                <li><a href="event-bookings.html"><i class="fas fa-book"></i> My Event Bookings</a></li>
+                <li><a href="staff.html"><i class="fas fa-users"></i> Staff</a></li>
+                <li class="user-menu">
+                    <a href="#" id="userMenuButton"><i class="fas fa-user"></i> <span id="userName">User</span></a>
+                    <div class="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-cog"></i> Profile</a>
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-header">
+            <div>
+                <h1><i class="fas fa-calendar-alt"></i> Special Events</h1>
+                <p>Book our premium vehicles for weddings, photoshoots, airport transfers, and more!</p>
+            </div>
+            <div class="action-buttons">
+                <button id="createEventBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Event</button>
+            </div>
+        </section>
+
+        <section class="event-filters">
+            <div class="filter-group">
+                <label for="eventTypeFilter">Event Type:</label>
+                <select id="eventTypeFilter">
+                    <option value="all">All Types</option>
+                    <option value="WEDDING">Wedding</option>
+                    <option value="PHOTOSHOOT">Photoshoot</option>
+                    <option value="AIRPORT_TRANSFER">Airport Transfer</option>
+                    <option value="CORPORATE">Corporate Event</option>
+                    <option value="TOUR">Tour</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="name">Name</option>
+                    <option value="price_low">Price: Low to High</option>
+                    <option value="price_high">Price: High to Low</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="events-grid" id="eventsGrid">
+            <!-- Events will be dynamically added here -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading events...
+            </div>
+        </section>
+
+        <!-- Empty state message -->
+        <div id="emptyEvents" class="empty-state" style="display: none;">
+            <i class="fas fa-calendar-times fa-3x"></i>
+            <h2>No Events Found</h2>
+            <p>There are no events available. Create a new event to get started.</p>
+            <button id="emptyCreateEventBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Create New Event</button>
+        </div>
+    </main>
+
+    <!-- Event Details Modal -->
+    <div id="eventDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventDetailsTitle">Event Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="eventDetailsBody">
+                <!-- Event details will be dynamically added here -->
+                <div class="event-detail-sections">
+                    <div class="event-info-section">
+                        <div class="event-image">
+                            <img id="eventImage" src="" alt="Event image">
+                        </div>
+                        <div class="event-info">
+                            <h3 id="eventName"></h3>
+                            <p><strong>Type:</strong> <span id="eventType"></span></p>
+                            <p><strong>Price:</strong> Rs. <span id="eventPrice"></span></p>
+                            <p><strong>Duration:</strong> <span id="eventDuration"></span> hours</p>
+                            <p><strong>Available:</strong> <span id="eventDateRange"></span></p>
+                            <p class="event-description" id="eventDescription"></p>
+                        </div>
+                    </div>
+                    <div class="event-vehicles-section">
+                        <h3>Vehicles Included</h3>
+                        <div class="event-vehicles-container" id="eventVehiclesContainer">
+                            <!-- Vehicles will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="editEventBtn" class="btn btn-secondary">Edit Event</button>
+                <button id="deleteEventBtn" class="btn btn-danger">Delete Event</button>
+                <button id="bookEventBtn" class="btn btn-primary">Book This Event</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="eventFormTitle">Create New Event</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="eventForm">
+                    <input type="hidden" id="editEventId">
+                    
+                    <div class="form-tabs">
+                        <div class="tab-header">
+                            <button type="button" class="tab-btn active" data-tab="basicInfo">Basic Information</button>
+                            <button type="button" class="tab-btn" data-tab="vehicles">Vehicle Selection</button>
+                            <button type="button" class="tab-btn" data-tab="image">Event Image</button>
+                        </div>
+                        
+                        <div class="tab-content" id="basicInfoTab">
+                            <div class="form-group">
+                                <label for="eventNameInput">Event Name:</label>
+                                <input type="text" id="eventNameInput" required placeholder="Enter event name">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventTypeInput">Event Type:</label>
+                                <select id="eventTypeInput" required>
+                                    <option value="">-- Select Event Type --</option>
+                                    <option value="WEDDING">Wedding</option>
+                                    <option value="PHOTOSHOOT">Photoshoot</option>
+                                    <option value="AIRPORT_TRANSFER">Airport Transfer</option>
+                                    <option value="CORPORATE">Corporate Event</option>
+                                    <option value="TOUR">Tour</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventPriceInput">Price (Rs):</label>
+                                <input type="number" id="eventPriceInput" min="0" step="0.01" required placeholder="Enter price in Rupees">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="eventStartDateInput">Start Date:</label>
+                                    <input type="date" id="eventStartDateInput" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="eventEndDateInput">End Date:</label>
+                                    <input type="date" id="eventEndDateInput" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventDurationInput">Duration (hours):</label>
+                                <input type="number" id="eventDurationInput" min="1" required placeholder="Enter duration in hours">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="eventDescriptionInput">Description:</label>
+                                <textarea id="eventDescriptionInput" rows="4" required placeholder="Enter detailed event description"></textarea>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <label>
+                                    <input type="checkbox" id="eventActiveInput" checked>
+                                    Active
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="vehiclesTab" style="display: none;">
+                            <div class="form-group vehicle-selection">
+                                <label><strong>Select Vehicles from Inventory:</strong></label>
+                                <div class="search-box">
+                                    <input type="text" id="vehicleSearchInput" placeholder="Search available vehicles...">
+                                </div>
+                                <div class="vehicle-count-display">
+                                    <span id="selectedVehicleCount">0</span> vehicles selected
+                                </div>
+                                <div id="availableVehiclesContainer" class="available-vehicles-grid">
+                                    <p class="loading"><i class="fas fa-spinner fa-spin"></i> Loading inventory vehicles...</p>
+                                    <!-- Available vehicles will be dynamically added here -->
+                                </div>
+                                <div class="selected-vehicles">
+                                    <h4>Selected Vehicles:</h4>
+                                    <div id="selectedVehiclesContainer" class="selected-vehicles-list">
+                                        <p id="noVehiclesSelected" class="empty-message">No vehicles selected</p>
+                                        <!-- Selected vehicles will be dynamically added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="imageTab" style="display: none;">
+                            <div class="form-group">
+                                <label for="eventImageUpload">Event Image:</label>
+                                <input type="file" id="eventImageUpload" accept="image/*">
+                                <p class="help-text">Upload an image for the event (JPG, PNG, max 5MB)</p>
+                                <div id="imagePreview" class="image-preview"></div>
+                            </div>
+                            <input type="hidden" id="eventImagePathInput">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="prevTabBtn" class="btn btn-secondary" style="display: none;">Previous</button>
+                        <button type="button" id="nextTabBtn" class="btn btn-primary">Next</button>
+                        <button type="submit" id="submitEventBtn" class="btn btn-success" style="display: none;">Create Event</button>
+                        <button type="button" id="cancelEventFormBtn" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Book Event Modal -->
+    <div id="bookEventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Event: <span id="bookEventTitle"></span></h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="bookEventForm">
+                    <input type="hidden" id="bookEventId">
+                    <div class="form-group">
+                        <label for="bookingDate">Select Date:</label>
+                        <input type="date" id="bookingDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="specialRequests">Special Requests:</label>
+                        <textarea id="specialRequests" rows="3" placeholder="Any special requests or notes for your booking?"></textarea>
+                    </div>
+                    <div class="payment-info">
+                        <h3>Payment Information</h3>
+                        <p>Price: Rs. <span id="bookingPrice">0</span></p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Confirm Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Delete</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the event "<span id="deleteEventName"></span>"?</p>
+                <p class="warning">This action cannot be undone!</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDeleteBtn" class="btn btn-danger">Yes, Delete Event</button>
+                <button id="cancelDeleteBtn" class="btn btn-secondary">No, Keep Event</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/events.js"></script>
+</body>
+</html> 

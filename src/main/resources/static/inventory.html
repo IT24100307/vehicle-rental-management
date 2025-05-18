@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Inventory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System
+        </div>
+                <nav>            <ul>                <li><a href="inventory.html" class="active"><i class="fas fa-list"></i> Inventory</a></li>                <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Special Events</a></li>                <li><a href="discounts.html"><i class="fas fa-percent"></i> Discounts</a></li>                <li><a href="rentals.html"><i class="fas fa-file-contract"></i> My Rentals</a></li>                <li><a href="event-bookings.html"><i class="fas fa-book"></i> My Event Bookings</a></li>                <li><a href="staff.html"><i class="fas fa-users"></i> Staff</a></li>                <li class="user-menu">                    <a href="#" id="userMenuButton"><i class="fas fa-user"></i> <span id="userName">User</span></a>                    <div class="dropdown-menu">                        <a href="profile.html"><i class="fas fa-user-cog"></i> Profile</a>                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>                    </div>                </li>            </ul>        </nav>
+    </header>
+
+    <main class="container">        <section class="vehicle-filters">
+            <div class="filter-group">
+                <h3><i class="fas fa-sort"></i> Sort Vehicles by Price</h3>
+                <div class="filter-options">
+                    <button class="sort-btn active" data-sort="none">No Sorting</button>
+                    <button class="sort-btn" data-sort="asc">Low to High</button>
+                    <button class="sort-btn" data-sort="desc">High to Low</button>
+                </div>
+            </div>
+            
+            <div class="add-vehicle-btn">
+                <button id="addVehicleBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Vehicle
+                </button>
+            </div>
+        </section>
+
+        <section class="vehicle-grid" id="vehicleGrid">
+            <!-- Vehicle cards will be dynamically added here -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading vehicles...
+            </div>
+        </section>
+
+        <!-- Rented Vehicles Linked List Section -->
+        <section class="rented-vehicles-section">
+            <h2><i class="fas fa-file-contract"></i> Currently Rented Vehicles</h2>
+            <div class="linked-list-container" id="rentedVehiclesList">
+                <!-- Linked list visualization will be added here -->
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading rented vehicles...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Vehicle Modal -->
+    <div id="addVehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add New Vehicle</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="addVehicleForm">
+                    <div class="form-group">
+                        <label for="vehicleID">Vehicle ID</label>
+                        <input type="text" id="vehicleID" name="vehicleID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicleType">Vehicle Type</label>
+                        <select id="vehicleType" name="vehicleType" required>
+                            <option value="">Select a type</option>
+                            <option value="1">Car</option>
+                            <option value="2">Van</option>
+                            <option value="3">Bike</option>
+                            <option value="4">Bus</option>
+                            <option value="5">Lorry</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" id="model" name="model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rentPrice">Rent Price (Rs.)</label>
+                        <input type="number" id="rentPrice" name="rentPrice" min="0" step="0.01" required>
+                    </div>
+                    
+                    <!-- Car-specific fields -->
+                    <div class="type-specific-fields" id="carFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="numberOfDoors">Number of Doors</label>
+                            <input type="number" id="numberOfDoors" name="numberOfDoors" min="2" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="transmissionType">Transmission Type</label>
+                            <select id="transmissionType" name="transmissionType">
+                                <option value="Manual">Manual</option>
+                                <option value="Automatic">Automatic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Van-specific fields -->
+                    <div class="type-specific-fields" id="vanFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="cargoCapacity">Cargo Capacity (kg)</label>
+                            <input type="number" id="cargoCapacity" name="cargoCapacity" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Bike-specific fields -->
+                    <div class="type-specific-fields" id="bikeFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="engineCapacity">Engine Capacity (cc)</label>
+                            <input type="number" id="engineCapacity" name="engineCapacity" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Bus-specific fields -->
+                    <div class="type-specific-fields" id="busFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="seatingCapacity">Seating Capacity</label>
+                            <input type="number" id="seatingCapacity" name="seatingCapacity" min="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Lorry-specific fields -->
+                    <div class="type-specific-fields" id="lorryFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="maxLoad">Maximum Load (tons)</label>
+                            <input type="number" id="maxLoad" name="maxLoad" min="0" step="0.1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicleImage">Vehicle Image</label>
+                        <input type="file" id="vehicleImage" name="vehicleImage" accept="image/*">
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Add Vehicle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Details Modal -->
+    <div id="vehicleDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="vehicleDetailsTitle">Vehicle Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="vehicleDetailsBody">
+                <!-- Vehicle details will be dynamically added here -->
+            </div>
+            <div class="modal-footer">
+                <button id="rentVehicleBtn" class="btn btn-primary">Rent This Vehicle</button>
+                <button id="editVehicleBtn" class="btn btn-secondary">Edit Vehicle</button>
+                <button id="deleteVehicleBtn" class="btn btn-danger">Delete Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rent Vehicle Modal -->
+    <div id="rentVehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="rentVehicleTitle">Rent Vehicle</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="rentVehicleForm">
+                    <div class="form-group">
+                        <label for="rentalDays">Number of Days</label>
+                        <input type="number" id="rentalDays" name="rentalDays" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Cost: <span id="estimatedCost">0</span> Rs.</label>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Confirm Rental</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/inventory.js"></script>
+</body>
+</html>

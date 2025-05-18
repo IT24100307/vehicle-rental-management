@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - My Rentals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System
+        </div>
+        <nav>
+            <ul>
+                <li><a href="inventory.html"><i class="fas fa-list"></i> Inventory</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Special Events</a></li>
+                <li><a href="rentals.html" class="active"><i class="fas fa-file-contract"></i> My Rentals</a></li>
+                <li><a href="event-bookings.html"><i class="fas fa-book"></i> My Event Bookings</a></li>
+                <li class="user-menu">
+                    <a href="#" id="userMenuButton"><i class="fas fa-user"></i> <span id="userName">User</span></a>
+                    <div class="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-cog"></i> Profile</a>
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Active Rentals Section -->
+        <section class="section-header">
+            <h1><i class="fas fa-file-contract"></i> My Active Rentals</h1>
+        </section>
+
+        <section class="rentals-list" id="activeRentalsList">
+            <!-- Active rental items will be dynamically added here -->
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i> Loading your rentals...
+            </div>
+        </section>
+
+        <!-- Empty state message for active rentals -->
+        <div id="emptyActiveRentals" class="empty-state" style="display: none;">
+            <i class="fas fa-car-side fa-3x"></i>
+            <h2>No Active Rentals</h2>
+            <p>You don't have any active rentals at the moment.</p>
+            <a href="inventory.html" class="btn btn-primary">Browse Inventory</a>
+        </div>
+
+        <!-- Rental History Section -->
+        <section class="section-header rental-history-header">
+            <h1><i class="fas fa-history"></i> My Rental History</h1>
+        </section>
+
+        <section class="rentals-list" id="rentalHistoryList">
+            <!-- Rental history items will be dynamically added here -->
+        </section>
+
+        <!-- Empty state message for rental history -->
+        <div id="emptyRentalHistory" class="empty-state" style="display: none;">
+            <i class="fas fa-history fa-3x"></i>
+            <h2>No Rental History</h2>
+            <p>Your rental history will appear here after you've returned vehicles.</p>
+        </div>
+    </main>
+
+    <!-- Rental Details Modal -->
+    <div id="rentalDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="rentalDetailsTitle">Rental Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="rentalDetailsBody">
+                <!-- Rental details will be dynamically added here -->
+            </div>            <div class="modal-footer">
+                <button id="returnVehicleBtn" class="btn btn-primary">Return Vehicle</button>
+                <button id="printReceiptBtn" class="btn btn-secondary">Print Receipt</button>
+                <button id="processPaymentBtn" class="btn btn-secondary">Process Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/rentals.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Complete Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card profile-card">
+            <div class="card-header">
+                <h2><i class="fas fa-user-edit"></i> Complete Your Profile</h2>
+                <p>Add additional information to your profile (optional)</p>
+            </div>
+            <div class="card-body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="address"><i class="fas fa-home"></i> Address</label>
+                        <textarea id="address" name="address" placeholder="Enter your full address"></textarea>
+                    </div>
+                    
+                    <!-- Additional fields can be added here -->
+                    
+                    <div class="form-group button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Information
+                        </button>
+                        <button type="button" id="skipButton" class="btn btn-secondary">
+                            <i class="fas fa-forward"></i> Skip for Now
+                        </button>
+                    </div>
+                </form>
+                <div id="error-message" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+    <script src="js/profile.js"></script>
+</body>
+</html>
