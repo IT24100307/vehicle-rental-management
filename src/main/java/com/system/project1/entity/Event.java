@@ -1,71 +1,95 @@
 package com.system.project1.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.JoinColumn;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Event {
     @Id
-    private String eventId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false)
-    private String eventType; // Long Trip, Short Trip, Airport, Special
+    private String name;
+    private String description;
+    private double price;
+    private String eventType; // AIRPORT_DROP, WEDDING, PHOTOSHOOT, etc.
+    private int durationHours;
+    private String imagePath;
+    private boolean isActive;
 
-    @Column(nullable = false)
-    private double basePrice;
+    @Temporal(TemporalType.DATE)
+    private Date startDate;
 
-    @Column
-    private LocalDateTime scheduledDate;
+    @Temporal(TemporalType.DATE)
+    private Date endDate;
 
-    @Column
-    private String status = "PENDING"; // Default status
+    @Transient
+    private String startDateStr;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "event_vehicle_types", joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "vehicle_type")
-    private List<String> vehicleTypes = new ArrayList<>();
+    @Transient
+    private String endDateStr;
 
-    // Default constructor required by JPA
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "event_vehicles", joinColumns = @JoinColumn(name = "event_id"), inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
+    private List<Vehicle> vehicles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventBooking> bookings = new ArrayList<>();
+
+    @Transient
+    private List<String> vehicleIds;
+
+    // Constructors
     public Event() {
+        this.isActive = true;
+        this.vehicleIds = new ArrayList<>();
     }
 
-    // Constructor
-    public Event(String eventId, String eventType, double basePrice, List<String> vehicleTypes) {
-        this.eventId = eventId;
+    public Event(String name, String description, double price, String eventType, int durationHours) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
         this.eventType = eventType;
-        this.basePrice = basePrice;
-        if (vehicleTypes != null) {
-            this.vehicleTypes.addAll(vehicleTypes);
-        }
+        this.durationHours = durationHours;
+        this.isActive = true;
+        this.vehicleIds = new ArrayList<>();
     }
 
-    // Constructor with scheduledDate
-    public Event(String eventId, String eventType, double basePrice, List<String> vehicleTypes,
-            LocalDateTime scheduledDate) {
-        this(eventId, eventType, basePrice, vehicleTypes);
-        this.scheduledDate = scheduledDate;
+    // Getters and setters
+    public Long getId() {
+        return id;
     }
 
-    // Getters and Setters
-    public String getEventId() {
-        return eventId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     public String getEventType() {
@@ -76,75 +100,96 @@ public class Event {
         this.eventType = eventType;
     }
 
-    public double getBasePrice() {
-        return basePrice;
+    public int getDurationHours() {
+        return durationHours;
     }
 
-    public void setBasePrice(double basePrice) {
-        this.basePrice = basePrice;
+    public void setDurationHours(int durationHours) {
+        this.durationHours = durationHours;
     }
 
-    public List<String> getVehicleTypes() {
-        return vehicleTypes;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setVehicleTypes(List<String> vehicleTypes) {
-        this.vehicleTypes.clear();
-        if (vehicleTypes != null) {
-            this.vehicleTypes.addAll(vehicleTypes);
-        }
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
-    public void addVehicleType(String vehicleType) {
-        if (vehicleType != null && !vehicleType.trim().isEmpty()) {
-            this.vehicleTypes.add(vehicleType);
-        }
+    public boolean isActive() {
+        return isActive;
     }
 
-    public LocalDateTime getScheduledDate() {
-        return scheduledDate;
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
-    public void setScheduledDate(LocalDateTime scheduledDate) {
-        this.scheduledDate = scheduledDate;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public String getStatus() {
-        return status;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getStartDateStr() {
+        return startDateStr;
     }
 
-    // Method to calculate total price - will be overridden by subclasses
-    public double calculateTotalPrice() {
-        return basePrice;
+    public void setStartDateStr(String startDateStr) {
+        this.startDateStr = startDateStr;
     }
 
-    public void displayEventDetails() {
-        System.out.println("Event ID: " + eventId);
-        System.out.println("Event Type: " + eventType);
-        System.out.println("Base Price: Rs. " + basePrice);
-        System.out.println("Scheduled Date: " + scheduledDate);
-        System.out.println("Status: " + status);
-        System.out.println("Available Vehicles: ");
-        for (String vehicle : vehicleTypes) {
-            System.out.println("  - " + vehicle);
-        }
-        System.out.println("----------------------------------");
+    public Date getEndDate() {
+        return endDate;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "eventId='" + eventId + '\'' +
-                ", eventType='" + eventType + '\'' +
-                ", basePrice=" + basePrice +
-                ", scheduledDate=" + scheduledDate +
-                ", status='" + status + '\'' +
-                ", vehicleTypes=" + vehicleTypes +
-                '}';
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEndDateStr() {
+        return endDateStr;
+    }
+
+    public void setEndDateStr(String endDateStr) {
+        this.endDateStr = endDateStr;
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public void addVehicle(Vehicle vehicle) {
+        this.vehicles.add(vehicle);
+    }
+
+    public void removeVehicle(Vehicle vehicle) {
+        this.vehicles.remove(vehicle);
+    }
+
+    public List<EventBooking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<EventBooking> bookings) {
+        this.bookings = bookings;
+    }
+
+    public void addBooking(EventBooking booking) {
+        this.bookings.add(booking);
+    }
+
+    public List<String> getVehicleIds() {
+        return vehicleIds;
+    }
+
+    public void setVehicleIds(List<String> vehicleIds) {
+        this.vehicleIds = vehicleIds;
     }
 
     @Override
@@ -153,12 +198,29 @@ public class Event {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
+
         Event event = (Event) o;
-        return Objects.equals(eventId, event.eventId);
+
+        return id != null ? id.equals(event.id) : event.id == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId);
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", startDate=" + startDate +
+                ", startDateStr='" + startDateStr + '\'' +
+                ", endDate=" + endDate +
+                ", endDateStr='" + endDateStr + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", vehicleIds=" + (vehicleIds != null ? vehicleIds.size() : 0) +
+                '}';
     }
 }

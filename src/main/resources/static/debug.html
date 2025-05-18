@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Debug</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System - Debug
+        </div>
+        <nav>
+            <ul>
+                <li><a href="inventory.html"><i class="fas fa-list"></i> Back to Inventory</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="debug-section">
+            <h2>Customer Debug Information</h2>
+            <div id="customerInfo">Loading...</div>
+            
+            <div class="debug-actions">
+                <button id="fixCustomerBtn" class="btn btn-primary">Fix Customer Data</button>
+                <button id="testLoginBtn" class="btn btn-secondary">Test Login</button>
+                <button id="clearDataBtn" class="btn btn-danger">Clear Storage</button>
+            </div>
+            
+            <div id="debugOutput" class="debug-output"></div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customerInfo = document.getElementById('customerInfo');
+            const debugOutput = document.getElementById('debugOutput');
+            const fixCustomerBtn = document.getElementById('fixCustomerBtn');
+            const testLoginBtn = document.getElementById('testLoginBtn');
+            const clearDataBtn = document.getElementById('clearDataBtn');
+            
+            // Show current customer information
+            function showCustomerInfo() {
+                const customer = JSON.parse(localStorage.getItem('customer'));
+                if (customer) {
+                    customerInfo.innerHTML = `
+                        <table>
+                            <tr><th>Property</th><th>Value</th><th>Type</th></tr>
+                            <tr><td>customerId</td><td>${customer.customerId}</td><td>${typeof customer.customerId}</td></tr>
+                            <tr><td>name</td><td>${customer.name}</td><td>${typeof customer.name}</td></tr>
+                            <tr><td>email</td><td>${customer.email}</td><td>${typeof customer.email}</td></tr>
+                            <tr><td>contactNumber</td><td>${customer.contactNumber}</td><td>${typeof customer.contactNumber}</td></tr>
+                            <tr><td>driverLicenseNumber</td><td>${customer.driverLicenseNumber}</td><td>${typeof customer.driverLicenseNumber}</td></tr>
+                            <tr><td>address</td><td>${customer.address}</td><td>${typeof customer.address}</td></tr>
+                        </table>
+                    `;
+                } else {
+                    customerInfo.innerHTML = `<p>No customer data in localStorage</p>`;
+                }
+            }
+            
+            showCustomerInfo();
+            
+            // Fix customer data
+            fixCustomerBtn.addEventListener('click', async function() {
+                debugOutput.innerHTML = '<p>Attempting to fix customer data...</p>';
+                
+                try {
+                    const customer = JSON.parse(localStorage.getItem('customer')) || {
+                        email: 'test@example.com',
+                        password: 'password123'
+                    };
+                    
+                    // Try to log in
+                    const response = await fetch('/api/customers/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: customer.email || 'test@example.com',
+                            password: customer.password || 'password123'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Login failed: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    localStorage.setItem('customer', JSON.stringify(data.customer));
+                    
+                    debugOutput.innerHTML += `<p>Successfully updated customer data. New ID: ${data.customer.customerId}</p>`;
+                    showCustomerInfo();
+                } catch (error) {
+                    debugOutput.innerHTML += `<p>Error: ${error.message}</p>`;
+                }
+            });
+            
+            // Test login with test user
+            testLoginBtn.addEventListener('click', async function() {
+                debugOutput.innerHTML = '<p>Testing login with test user...</p>';
+                
+                try {
+                    const response = await fetch('/api/customers/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: 'test@example.com',
+                            password: 'password123'
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Login failed: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    localStorage.setItem('customer', JSON.stringify(data.customer));
+                    
+                    debugOutput.innerHTML += `<p>Successfully logged in as test user. ID: ${data.customer.customerId}</p>`;
+                    showCustomerInfo();
+                } catch (error) {
+                    debugOutput.innerHTML += `<p>Error: ${error.message}</p>`;
+                }
+            });
+            
+            // Clear storage
+            clearDataBtn.addEventListener('click', function() {
+                localStorage.removeItem('customer');
+                debugOutput.innerHTML = '<p>Cleared customer data from localStorage</p>';
+                showCustomerInfo();
+            });
+        });
+    </script>
+</body>
+</html>

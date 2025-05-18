@@ -1,48 +1,53 @@
 package com.system.project1.service;
 
 import com.system.project1.entity.Event;
-import com.system.project1.repository.EventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.system.project1.entity.Vehicle;
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class EventService {
+public interface EventService {
 
-    @Autowired
-    private EventRepository eventRepository;
+    /**
+     * Get all events
+     * 
+     * @return List of all events
+     */
+    List<Event> getAllEvents();
 
-    public List<Event> getAllEvents() {
-        return eventRepository.findAll();
-    }
+    /**
+     * Get event by ID
+     * 
+     * @param id Event ID
+     * @return Event if found, null otherwise
+     */
+    Event getEventById(Long id);
 
-    public Event getEventById(String eventId) {
-        Optional<Event> event = eventRepository.findById(eventId);
-        return event.orElse(null);
-    }
+    /**
+     * Save a new event or update an existing one
+     * 
+     * @param event Event to save
+     * @return Saved event
+     */
+    Event saveEvent(Event event);
 
-    public List<Event> getEventsByType(String eventType) {
-        return eventRepository.findByEventType(eventType);
-    }
+    /**
+     * Delete an event
+     * 
+     * @param id Event ID
+     */
+    void deleteEvent(Long id);
 
-    public Event saveEvent(Event event) {
-        return eventRepository.save(event);
-    }
+    /**
+     * Get all active events
+     * 
+     * @return List of active events
+     */
+    List<Event> getActiveEvents();
 
-    public void deleteEvent(String eventId) {
-        eventRepository.deleteById(eventId);
-    }
-
-    public Event updateEvent(String eventId, Event eventDetails) {
-        Event existingEvent = getEventById(eventId);
-        if (existingEvent != null) {
-            existingEvent.setEventType(eventDetails.getEventType());
-            existingEvent.setBasePrice(eventDetails.getBasePrice());
-            existingEvent.setVehicleTypes(eventDetails.getVehicleTypes());
-            return eventRepository.save(existingEvent);
-        }
-        return null;
-    }
+    /**
+     * Get events by type
+     * 
+     * @param eventType Event type
+     * @return List of events of the specified type
+     */
+    List<Event> getEventsByType(String eventType);
 }
