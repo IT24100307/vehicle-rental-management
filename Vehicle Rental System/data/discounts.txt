@@ -1,0 +1,4 @@
+1|Christmas Special|20% off on all rentals during Christmas period|20.00|SEASONAL|true|2025-12-20|2025-12-31||false|
+3|Loyalty Discount|10% off for customers with at least 2 previous rides|10.00|LOYALTY|true|||2|false|
+2|New Year Special|20% off on all rentals during New Year period|20.00|SEASONAL|true|2025-04-01|2025-04-30||false|
+

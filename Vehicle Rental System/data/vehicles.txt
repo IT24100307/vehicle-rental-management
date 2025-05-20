@@ -1,0 +1,6 @@
+ABC-123|TOYOTA|land cruiser|8000.00|/images/ABC-123_download (5).jpeg|0|
+BAC-456|SUZUKI|Alto|4000.00|/images/BAC-456_download (6).jpeg|0|
+BCC-789|ISUZU|ELF|6000.00|/images/BCC-789_download (4).jpeg|0|
+UQ-8964|SUZUKI|GN|2500.00|/images/UQ-8964_download (1).jpeg|0|
+JHK-456|TOYOTA|KDH|7500.00|/images/JHK-456_download (7).jpeg|0|
+CA-7654|Honda|vezel|5000.00|/images/CA-7654_download (3).jpeg|0|

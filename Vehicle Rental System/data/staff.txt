@@ -1,0 +1,4 @@
+1|Nadeesha|nadeesha@gmail.com|0828288317|Indoor Office
+2|Chandima|chandima@gmail.com|123456789|Vehicle Repair
+3|Thisara|thisara@hotmail.com|456789123|Administration
+4|Senuja|Senuja@yahoo.com|789456123|SOS Support

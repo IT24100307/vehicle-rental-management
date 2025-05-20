@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .profile-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .delete-account {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .delete-account h3 {
+            color: #dc3545;
+        }
+        .delete-account p {
+            margin-bottom: 15px;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .section-title {
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card profile-card">
+            <div class="card-header">
+                <h2><i class="fas fa-user-circle"></i> Your Profile</h2>
+                <p>View and update your account information</p>
+            </div>
+            <div class="card-body">
+                <div id="success-message" class="success-message"></div>
+                
+                <form id="profileForm">
+                    <h3 class="section-title"><i class="fas fa-id-card"></i> Personal Information</h3>
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your full name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email address" readonly>
+                        <small class="form-text">Email cannot be changed</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactNumber"><i class="fas fa-phone"></i> Contact Number</label>
+                        <input type="text" id="contactNumber" name="contactNumber" placeholder="Your phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address"><i class="fas fa-home"></i> Address</label>
+                        <textarea id="address" name="address" placeholder="Enter your full address"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="driverLicenseNumber"><i class="fas fa-id-card"></i> Driver License Number</label>
+                        <input type="text" id="driverLicenseNumber" name="driverLicenseNumber" placeholder="Your driver license number">
+                    </div>
+                    
+                    <h3 class="section-title"><i class="fas fa-key"></i> Change Password</h3>
+                    <div class="form-group">
+                        <label for="currentPassword"><i class="fas fa-lock"></i> Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter your current password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword"><i class="fas fa-key"></i> New Password</label>
+                        <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword"><i class="fas fa-check-circle"></i> Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password">
+                    </div>
+                    
+                    <div class="form-group button-group">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button type="button" id="cancelButton" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="delete-account">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Delete Account</h3>
+                    <p>Warning: This action cannot be undone. All your data will be permanently removed.</p>
+                    <button id="deleteAccountBtn" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Delete My Account
+                    </button>
+                </div>
+                
+                <div id="error-message" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-circle"></i> Confirm Account Deletion</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <p>Please enter your password to confirm:</p>
+                
+                <div class="form-group">
+                    <input type="password" id="deleteConfirmPassword" placeholder="Enter your password">
+                </div>
+                
+                <div id="deleteErrorMessage" class="error-message"></div>
+                
+                <div class="modal-actions">
+                    <button id="confirmDeleteBtn" class="btn btn-danger">Delete My Account</button>
+                    <button id="cancelDeleteBtn" class="btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/profile.js"></script>
+</body>
+</html>

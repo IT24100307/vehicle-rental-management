@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - Payment</title>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/payment.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System
+        </div>
+        <nav>
+            <ul>
+                <li><a href="inventory.html"><i class="fas fa-list"></i> Inventory</a></li>
+                <li><a href="rentals.html"><i class="fas fa-file-contract"></i> My Rentals</a></li>
+                <li class="user-menu">
+                    <a href="#" id="userMenuButton"><i class="fas fa-user"></i> <span id="userName">User</span></a>
+                    <div class="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-cog"></i> Profile</a>
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="section-header">
+            <h1><i class="fas fa-credit-card"></i> Payment</h1>
+        </section>
+
+        <section class="payment-container">
+            <div class="payment-details">
+                <h2>Rental Summary</h2>
+                <div class="rental-summary">
+                    <div id="vehicleDetails" class="rental-info-block">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Loading rental details...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-method-selection">
+                <h2>Select Payment Method</h2>
+                <div class="payment-methods">
+                    <div class="payment-method" id="cardMethod">
+                        <i class="far fa-credit-card"></i>
+                        <span>Credit/Debit Card</span>
+                    </div>
+                    <div class="payment-method" id="cashMethod">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Cash Payment</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cardPaymentForm" class="payment-form" style="display: none;">
+                <h2>Card Payment Details</h2>
+                <form id="creditCardForm">
+                    <div class="form-group">
+                        <label for="cardHolderName">Card Holder Name</label>
+                        <input type="text" id="cardHolderName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" maxlength="16" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="cardExpiry">Expiry Date (MM/YY)</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="cardCvc">CVC</label>
+                            <input type="text" id="cardCvc" maxlength="3" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardType">Card Type</label>
+                        <select id="cardType" required>
+                            <option value="">Select Card Type</option>
+                            <option value="VISA">Visa</option>
+                            <option value="MASTER">MasterCard</option>
+                            <option value="AMEX">American Express</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" id="backBtn" class="btn btn-secondary">Back</button>
+                        <button type="submit" class="btn btn-primary">Confirm Payment</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="cashPaymentForm" class="payment-form" style="display: none;">
+                <h2>Cash Payment</h2>
+                <div class="cash-payment-info">
+                    <p>You have selected to pay with cash. Please visit our office with the mentioned amount.</p>
+                    <p>Your rental will be confirmed after payment is received.</p>
+                    <div class="form-actions">
+                        <button type="button" id="cashBackBtn" class="btn btn-secondary">Back</button>
+                        <button type="button" id="confirmCashBtn" class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </section>
+    </main>
+
+    <!-- Payment Confirmation Modal -->
+    <div id="paymentConfirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Payment Confirmation</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="confirmation-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Payment Successful!</h3>
+                <p>Your payment has been processed successfully.</p>
+                <div id="paymentDetails"></div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="viewRentalsBtn">View My Rentals</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/payment.js"></script>
+</body>
+</html>

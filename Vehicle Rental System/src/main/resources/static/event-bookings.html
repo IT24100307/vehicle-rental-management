@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Rental System - My Event Bookings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="main-header">
+        <div class="logo">
+            <i class="fas fa-car"></i> Vehicle Rental System
+        </div>
+        <nav>
+            <ul>
+                <li><a href="inventory.html"><i class="fas fa-list"></i> Inventory</a></li>
+                <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Special Events</a></li>
+                <li><a href="discounts.html"><i class="fas fa-percent"></i> Discounts</a></li>
+                <li><a href="rentals.html"><i class="fas fa-file-contract"></i> My Rentals</a></li>
+                <li><a href="event-bookings.html" class="active"><i class="fas fa-book"></i> My Event Bookings</a></li>
+                <li><a href="staff.html"><i class="fas fa-users"></i> Staff</a></li>
+                <li class="user-menu">
+                    <a href="#" id="userMenuButton"><i class="fas fa-user"></i> <span id="userName">User</span></a>
+                    <div class="dropdown-menu">
+                        <a href="profile.html"><i class="fas fa-user-cog"></i> Profile</a>
+                        <a href="#" id="logoutButton"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-header">
+            <h1><i class="fas fa-book"></i> My Event Bookings</h1>
+        </section>
+
+        <section class="booking-filters">
+            <div class="filter-group">
+                <label for="bookingStatusFilter">Status:</label>
+                <select id="bookingStatusFilter">
+                    <option value="all">All Bookings</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="past">Past</option>
+                    <option value="canceled">Canceled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="bookingDateFilter">Sort By:</label>
+                <select id="bookingDateFilter">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="bookings-container">
+            <div class="bookings-list" id="bookingsList">
+                <!-- Bookings will be dynamically added here -->
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading your bookings...
+                </div>
+            </div>
+        </section>
+
+        <!-- Empty state message -->
+        <div id="emptyBookings" class="empty-state" style="display: none;">
+            <i class="fas fa-calendar-times fa-3x"></i>
+            <h2>No Bookings Found</h2>
+            <p>You don't have any event bookings yet. <a href="events.html">Browse our events</a> to make a booking.</p>
+        </div>
+    </main>
+
+    <!-- Booking Details Modal -->
+    <div id="bookingDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> Booking Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body" id="bookingDetailsBody">
+                <!-- Booking details will be dynamically added here -->
+                <div class="booking-detail-sections">
+                    <div class="booking-info-section">
+                        <h3><span id="bookingEventName"></span></h3>
+                        <div class="booking-detail-row">
+                            <div class="booking-detail-label">Booking ID:</div>
+                            <div class="booking-detail-value" id="bookingId"></div>
+                        </div>
+                        <div class="booking-detail-row">
+                            <div class="booking-detail-label">Date:</div>
+                            <div class="booking-detail-value" id="bookingDate"></div>
+                        </div>
+                        <div class="booking-detail-row">
+                            <div class="booking-detail-label">Status:</div>
+                            <div class="booking-detail-value" id="bookingStatus"></div>
+                        </div>
+                        <div class="booking-detail-row">
+                            <div class="booking-detail-label">Price:</div>
+                            <div class="booking-detail-value" id="bookingPrice"></div>
+                        </div>
+                        <div class="booking-detail-row">
+                            <div class="booking-detail-label">Special Requests:</div>
+                            <div class="booking-detail-value" id="bookingRequests"></div>
+                        </div>
+                    </div>
+                    <div class="event-details-section">
+                        <div class="event-image">
+                            <img id="eventImage" src="" alt="Event image">
+                        </div>
+                        <div class="event-info">
+                            <h4>Event Details</h4>
+                            <div class="booking-detail-row">
+                                <div class="booking-detail-label">Type:</div>
+                                <div class="booking-detail-value" id="eventType"></div>
+                            </div>
+                            <div class="booking-detail-row">
+                                <div class="booking-detail-label">Duration:</div>
+                                <div class="booking-detail-value" id="eventDuration"></div>
+                            </div>
+                            <div class="booking-detail-row">
+                                <div class="booking-detail-label">Description:</div>
+                                <div class="booking-detail-value" id="eventDescription"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="vehicles-section">
+                        <h4>Vehicles Included</h4>
+                        <div class="event-vehicles-container" id="eventVehiclesContainer">
+                            <!-- Vehicles will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBookingBtn" class="btn btn-danger">Cancel Booking</button>
+                <button id="closeModalBtn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Cancel Modal -->
+    <div id="confirmCancelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Cancellation</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel your booking for "<span id="cancelEventName"></span>"?</p>
+                <p class="warning">This action cannot be undone!</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmCancelBtn" class="btn btn-danger">Yes, Cancel Booking</button>
+                <button id="cancelCancelBtn" class="btn btn-secondary">No, Keep Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/event-bookings.js"></script>
+</body>
+</html> 

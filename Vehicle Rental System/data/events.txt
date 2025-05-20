@@ -1,0 +1,3 @@
+2|Special|Congragulation!|6500.00|WEDDING|72|true|/images/events/39f3a11e-bf6a-403d-b036-7063119a30c1_download (9).jpeg|2025-05-21|2025-06-20|CA-7654,ABC-123
+3|sessional|..|5000.00|CORPORATE|24|true|/images/events/12dfb189-65dd-4dd4-b165-b6c42ae2eabe_download (10).jpeg|2025-05-20|2025-06-30|CA-7654,BAC-456,JHK-456,ABC-123,UQ-8964
+1|Special|Only for shooting|3000.00|PHOTOSHOOT|6|true|/images/events/e92ea04b-2561-495e-a03c-432b4992cd61_download (8).jpeg|2025-05-19|2025-06-29|ABC-123,JHK-456,BAC-456,CA-7654

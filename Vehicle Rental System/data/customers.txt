@@ -1,0 +1,2 @@
+1|Test User|1234567890|12345|test@example.com|securepassword|123 Test Street, Testville
+4|Chandima|0728288317|123456|chandimacbbandara@gmail.com|123|

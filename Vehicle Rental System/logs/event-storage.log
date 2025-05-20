@@ -1,0 +1,11 @@
+[2025-05-17 21:44:29] [INFO] EventStorageMonitor initialized
+[2025-05-17 21:44:30] [INFO] Running event storage diagnostics
+[2025-05-17 21:44:30] [INFO] Database event count: 0
+[2025-05-17 21:44:30] [INFO] In-memory event count: 0
+[2025-05-17 21:44:30] [INFO] Storage comparison - DB: 0, Memory: 0
+[2025-05-17 21:44:30] [INFO] Diagnostics completed successfully
+[2025-05-17 21:44:40] [INFO] Running event storage diagnostics
+[2025-05-17 21:44:40] [INFO] Database event count: 0
+[2025-05-17 21:44:40] [INFO] In-memory event count: 0
+[2025-05-17 21:44:40] [INFO] Storage comparison - DB: 0, Memory: 0
+[2025-05-17 21:44:40] [INFO] Diagnostics completed successfully
